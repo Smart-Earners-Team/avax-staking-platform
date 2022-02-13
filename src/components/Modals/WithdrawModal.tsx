@@ -1,65 +1,36 @@
-import { BigNumber } from "bignumber.js";
-import Button from "components/Button/Button";
-import ModalActions from "components/widgets/Modal/ModalActions";
-import ModalInput from "components/widgets/Modal/ModalInput";
-import useToast from "hooks/useToast";
 import React, { useCallback, useMemo, useState } from "react";
+import BigNumber from "bignumber.js";
+import { getFullDisplayBalance } from "utils/formatBalance";
+import useToast from "hooks/useToast";
 import { RiCloseLine } from "react-icons/ri";
-import { getInterestBreakdown } from "utils/compoundApyHealpers";
-import { formatNumber, getFullDisplayBalance } from "utils/formatBalance";
+import Button from "components/Button/Button";
+import ModalInput from "components/widgets/Modal/ModalInput";
+import ModalActions from "components/widgets/Modal/ModalActions";
 
-interface DepositModalProps {
+interface WithdrawModalProps {
   max: BigNumber;
-  stakedBalance: BigNumber;
-  multiplier?: string;
-  lpPrice: BigNumber;
-  lpLabel?: string;
+  days: string;
   onConfirm: (amount: string) => void;
   onDismiss?: () => void;
   tokenName?: string;
-  apr: number;
-  displayApr?: string;
-  addLiquidityUrl?: string;
-  cakePrice: BigNumber;
 }
 
-export const DepositModal = ({
-  max,
+const WithdrawModal: React.FC<WithdrawModalProps> = ({
   onConfirm,
   onDismiss,
-  tokenName = "",
-  addLiquidityUrl,
-  lpPrice,
-  apr,
-  cakePrice
-}: DepositModalProps) => {
+  max,
+  days,
+  tokenName = ""
+}) => {
   const [val, setVal] = useState("");
   const { toastSuccess, toastError } = useToast();
   const [pendingTx, setPendingTx] = useState(false);
   const fullBalance = useMemo(() => {
-    return getFullDisplayBalance(max, undefined, 4);
+    return getFullDisplayBalance(max, undefined, 5);
   }, [max]);
 
-  const lpTokensToStake = new BigNumber(val);
+  const valNumber = new BigNumber(val);
   const fullBalanceNumber = new BigNumber(fullBalance);
-
-  const usdToStake = lpTokensToStake.times(lpPrice);
-
-  const interestBreakdown = getInterestBreakdown({
-    principalInUSD: !lpTokensToStake.isNaN() ? usdToStake.toNumber() : 0,
-    apr,
-    earningTokenPrice: cakePrice.toNumber(),
-    compoundFrequency: 1,
-    performanceFee: 1
-  });
-
-  // 0 here refers to days 90 days see compoundApyHelpers
-  const annualRoi = cakePrice.times(interestBreakdown[0]);
-  const formattedAnnualRoi = formatNumber(
-    annualRoi.toNumber(),
-    annualRoi.gt(10000) ? 0 : 2,
-    annualRoi.gt(10000) ? 0 : 2
-  );
 
   const handleChange = useCallback(
     (e: React.FormEvent<HTMLInputElement>) => {
@@ -80,7 +51,7 @@ export const DepositModal = ({
       title="Stake LP tokens"
     >
       <div className="relative text-xl font-medium text-center mt-2 mb-4 p-4">
-        <div className="text-left">Stake{" "}{tokenName}</div>
+        <div className="text-left">Withdraw {tokenName}</div>
         <span
           onClick={onDismiss}
           className="absolute top-4 right-4 p-1 bg-primary-50/40 inline-block rounded-full hover:bg-primary-50/70 cursor-pointer"
@@ -89,17 +60,11 @@ export const DepositModal = ({
         </span>
       </div>
       <ModalInput
-        value={val}
         onSelectMax={handleSelectMax}
         onChange={handleChange}
-        max={fullBalance}
-        symbol={tokenName}
-        addLiquidityUrl={addLiquidityUrl}
-        inputTitle="Stake"
+        stakeAmount={val}
+        daysToStake={days}
       />
-      <div className="mt-6 flex items-center justify-between">
-        <p className="mr-2 text-gray-400">Annual ROI at current rates: ${formattedAnnualRoi}</p>
-      </div>
       <ModalActions>
         <Button
           className="w-full bg-red-600 text-white"
@@ -110,20 +75,20 @@ export const DepositModal = ({
           Cancel
         </Button>
         <Button
-          className="w-full"
           disabled={
             pendingTx ||
-            !lpTokensToStake.isFinite() ||
-            lpTokensToStake.eq(0) ||
-            lpTokensToStake.gt(fullBalanceNumber)
+            !valNumber.isFinite() ||
+            valNumber.eq(0) ||
+            valNumber.gt(fullBalanceNumber)
           }
+          className="w-full"
           onClick={async () => {
             setPendingTx(true);
             try {
               await onConfirm(val);
               toastSuccess(
-                "Staked!",
-                "Your funds have been staked in the farm"
+                "Unstaked!",
+                "Your earnings have also been harvested to your wallet"
               );
               onDismiss && onDismiss();
             } catch (e) {
@@ -139,14 +104,8 @@ export const DepositModal = ({
           {pendingTx ? "Confirming" : "Confirm"}
         </Button>
       </ModalActions>
-      <a
-        rel="nofollow noreferrer"
-        href={addLiquidityUrl}
-        style={{ alignSelf: "center" }}
-        className="text-xs font-medium text-blue-400 underline"
-      >
-        Get {tokenName}
-      </a>
     </div>
   );
 };
+
+export default WithdrawModal;

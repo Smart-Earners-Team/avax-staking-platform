@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { ASP_DECIMALS } from "config/constants";
 import { ethers } from "ethers";
 import { formatUnits } from "ethers/lib/utils";
 // import { getLanguageCodeFromLS } from 'contexts/Localization/helpers'
@@ -7,24 +8,24 @@ import { BIG_TEN } from "./bigNumber";
 /**
  * Take a formatted amount, e.g. 15 BNB and convert it to full decimal value, e.g. 15000000000000000
  */
-export const getDecimalAmount = (amount: BigNumber, decimals = 18) => {
+export const getDecimalAmount = (amount: BigNumber, decimals = ASP_DECIMALS) => {
   return new BigNumber(amount).times(BIG_TEN.pow(decimals));
 };
 
-export const getBalanceAmount = (amount: BigNumber, decimals = 18) => {
+export const getBalanceAmount = (amount: BigNumber, decimals = ASP_DECIMALS) => {
   return new BigNumber(amount).dividedBy(BIG_TEN.pow(decimals));
 };
 
 /**
  * This function is not really necessary but is used throughout the site.
  */
-export const getBalanceNumber = (balance: BigNumber, decimals = 18) => {
+export const getBalanceNumber = (balance: BigNumber, decimals = ASP_DECIMALS) => {
   return getBalanceAmount(balance, decimals).toNumber();
 };
 
 export const getFullDisplayBalance = (
   balance: BigNumber,
-  decimals = 18,
+  decimals = ASP_DECIMALS,
   displayDecimals?: number
 ) => {
   return getBalanceAmount(balance, decimals).toFixed(displayDecimals || 0);
@@ -48,8 +49,8 @@ export const formatNumber = (
  */
 export const formatBigNumber = (
   number: ethers.BigNumber,
-  displayDecimals = 18,
-  decimals = 18
+  displayDecimals = ASP_DECIMALS,
+  decimals = ASP_DECIMALS
 ) => {
   const remainder = number.mod(
     ethers.BigNumber.from(10).pow(decimals - displayDecimals)
@@ -63,8 +64,8 @@ export const formatBigNumber = (
  */
 export const formatBigNumberToFixed = (
   number: ethers.BigNumber,
-  displayDecimals = 18,
-  decimals = 18
+  displayDecimals = ASP_DECIMALS,
+  decimals = ASP_DECIMALS
 ) => {
   const formattedString = formatUnits(number, decimals);
   return (+formattedString).toFixed(displayDecimals);
@@ -76,8 +77,8 @@ export const formatBigNumberToFixed = (
  */
 export const formatFixedNumber = (
   number: ethers.FixedNumber,
-  displayDecimals = 18,
-  decimals = 18
+  displayDecimals = ASP_DECIMALS,
+  decimals = ASP_DECIMALS
 ) => {
   // Remove decimal
   const [leftSide] = number.toString().split(".");
@@ -87,14 +88,3 @@ export const formatFixedNumber = (
     decimals
   );
 };
-
-// export const formatLocalisedCompactNumber = (number: number): string => {
-//   const codeFromStorage = getLanguageCodeFromLS()
-//   return new Intl.NumberFormat(codeFromStorage, {
-//     notation: 'compact',
-//     compactDisplay: 'long',
-//     maximumSignificantDigits: 2,
-//   }).format(number)
-// }
-
-// export default formatLocalisedCompactNumber

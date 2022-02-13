@@ -5,9 +5,11 @@ import { ethers } from "ethers";
 import { formatFixedNumber } from "utils/formatBalance";
 import { useEagerConnect } from "hooks/useEagerConnect";
 import { useInactiveListener } from "hooks/useInactiveListener";
+import { fetchUserTokenBalance } from "state/user/hooks";
+import { getAspContract } from "utils/contractHelpers";
 
 export interface GlobalAppContext {
-  krlWallet: {
+  aspWallet: {
     active: boolean;
     balance: string;
     isConnecting: boolean;
@@ -17,7 +19,7 @@ export interface GlobalAppContext {
 }
 
 const defaultValues: GlobalAppContext = {
-  krlWallet: {
+  aspWallet: {
     active: false,
     balance: "0.000",
     isConnecting: true,
@@ -53,10 +55,10 @@ export default function AppContext({
 
   useEffect(() => {
     if (account && library) {
-      library.getBalance(account).then((bal) => {
-        const accBal = ethers.FixedNumber.from(bal);
-        setBalance(formatFixedNumber(accBal, 4));
-      });
+      (async () => {
+        const bal = await fetchUserTokenBalance(account, getAspContract(library.getSigner()));
+        setBalance(formatFixedNumber(ethers.FixedNumber.from(bal), 8));
+      })();
     } else {
       setBalance("0.000");
     }
@@ -72,7 +74,7 @@ export default function AppContext({
   return (
     <GlobalAppContextProvider.Provider
       value={{
-        krlWallet: {
+        aspWallet: {
           active,
           balance: balance,
           isConnecting,

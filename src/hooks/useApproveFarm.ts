@@ -1,10 +1,10 @@
 import { useCallback } from "react";
 import { ethers, Contract } from "ethers";
-import { useKrlContract } from "hooks/useContract";
+import { useAspContract } from "hooks/useContract";
 import { useCallWithGasPrice } from "hooks/useCallWithGasPrice";
 
 const useApproveFarm = (lpContract: Contract) => {
-  const masterChefContract = useKrlContract();
+  const masterChefContract = useAspContract();
   const { callWithGasPrice } = useCallWithGasPrice();
   const handleApprove = useCallback(async () => {
     // console.log(masterChefContract);

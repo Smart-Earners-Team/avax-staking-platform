@@ -1,9 +1,9 @@
 import { ethers } from "ethers";
-import { getKrlAddress, getMulticallAddress } from "./addressHelpers";
+import { getAspAddress, getMulticallAddress } from "./addressHelpers";
 // ABI
 import bep20Abi from "config/abi/erc20.json";
 import MultiCallAbi from "config/abi/Multicall.json";
-import krl from "config/abi/krlReward.json";
+import aspAbi from "config/abi/asp.json";
 import { simpleRpcProvider } from "./providers";
 
 export const getContract = (
@@ -23,10 +23,10 @@ export const getBep20Contract = (
 };
 
 // Who is master chef?
-export const getKrlContract = (
+export const getAspContract = (
   signer?: ethers.Signer | ethers.providers.Provider
 ) => {
-  return getContract(krl, getKrlAddress(), signer);
+  return getContract(aspAbi, getAspAddress(), signer);
 };
 
 export const getMulticallContract = (signer?: ethers.Signer | ethers.providers.Provider) => {

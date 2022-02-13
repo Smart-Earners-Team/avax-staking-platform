@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { getMulticallContract } from "utils/contractHelpers";
+import { getAspContract, getMulticallContract } from "utils/contractHelpers";
 
 export interface Call {
   address: string; // Address of the contract
@@ -9,9 +9,7 @@ export interface Call {
 
 const multicall = async <T = any>(abi: any[], calls: Call[]): Promise<T> => {
   try {
-    // const multi = getKrlContract();
     const multi = getMulticallContract();
-
     const itf = new ethers.utils.Interface(abi);
 
     const calldata = calls.map((call) => [
@@ -26,7 +24,7 @@ const multicall = async <T = any>(abi: any[], calls: Call[]): Promise<T> => {
     );
     return res;
   } catch (error: any) {
-    // console.log(error);
+    console.error(error);
     throw new Error(error);
   }
 };

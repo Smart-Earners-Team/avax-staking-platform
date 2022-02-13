@@ -1,5 +1,4 @@
 import React from "react";
-import { AiOutlineLoading3Quarters } from "react-icons/ai";
 import { RiLoader2Line } from "react-icons/ri";
 
 export interface ButtonProps
@@ -8,7 +7,6 @@ export interface ButtonProps
   loading?: boolean;
   active?: boolean;
   variant?: "primary" | "secondary" | "outlined";
-  children?: React.ReactNode;
 }
 
 export default function Button({

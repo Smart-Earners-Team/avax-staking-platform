@@ -32,7 +32,7 @@ export default function PrimaryFooter() {
           </Link>
           <div className="text-center flex justify-center">
             {socials.map(({ ...props }, i) => (
-              <Social {...props} />
+              <Social key={i} {...props} />
             ))}
           </div>
           <div className="text-sm text-center">

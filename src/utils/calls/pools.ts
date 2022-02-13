@@ -2,29 +2,24 @@ import BigNumber from "bignumber.js";
 import { DEFAULT_GAS_LIMIT, DEFAULT_TOKEN_DECIMAL } from "config";
 import { Contract } from "@ethersproject/contracts";
 import getGasPrice from "utils/getGasPrice";
+import { ASP_DECIMALS } from "config/constants";
+import { BIG_TEN } from "utils/bigNumber";
 
 const options = {
   gasLimit: DEFAULT_GAS_LIMIT,
 };
 
-export const stakeFarm = async (
-  krlContract: Contract,
-  pid: number,
-  amount: string
+export const stakePool = async (
+  contract: Contract,
+  amount: string,
+  days: string
 ) => {
-  const gasPrice = getGasPrice();
   const value = new BigNumber(amount)
-    .times(DEFAULT_TOKEN_DECIMAL)
+    .times(BIG_TEN.pow(ASP_DECIMALS))
     .toFixed()
     .toString();
 
-  if (pid === 0) {
-    const tx = await krlContract.stake(value, { ...options, gasPrice });
-    const receipt = await tx.wait();
-    return receipt.status;
-  }
-
-  const tx = await krlContract.stake(value, { ...options, gasPrice });
+  const tx = await contract.stakeStart(value, days);
   const receipt = await tx.wait();
   return receipt.status;
 };

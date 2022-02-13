@@ -3,7 +3,7 @@ import { serializeToken } from "state/user/hooks/helpers";
 import { ChainId } from "./";
 import { SerializedToken } from "./types";
 
-const { MAINNET } = ChainId;
+const { MAINNET, TESTNET } = ChainId;
 
 type TokenList = {
   [key in keyof typeof mainnetTokens]: Token;
@@ -14,13 +14,13 @@ interface SerializedTokenList {
 }
 
 export const mainnetTokens = {
-  krl: new Token(
-    MAINNET,
-    "0xF1288cF18B1FAaA35F40111c3E5d2f827e1E920E",
-    18,
-    "KRL",
-    "Kryptolite",
-    "https://kryptolite.rocks"
+  asp: new Token(
+    TESTNET,
+    "0xd1E177d9ADE89434c43f09489Dcf7F0475599DD3",
+    8,
+    "ASP",
+    "ASP",
+    "https://aspstake.io"
   ),
   wbnb: new Token(
     MAINNET,

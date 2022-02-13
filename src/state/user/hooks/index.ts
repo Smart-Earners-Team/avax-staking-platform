@@ -1,10 +1,8 @@
-import { useWeb3React } from "@web3-react/core";
+import BigNumber from "bignumber.js";
 import { ChainId } from "config/constants";
-import useRefresh from "hooks/useRefresh";
-import { useEffect } from "react";
+import { ethers } from "ethers";
 import { useSelector } from "react-redux";
-import { AppState, useAppDispatch } from "state";
-import { fetchReferralUserDataAsync } from "../actions";
+import { AppState } from "state";
 import { GAS_PRICE_GWEI } from "./helpers";
 
 export function useGasPrice(): string {
@@ -17,21 +15,10 @@ export function useGasPrice(): string {
     : GAS_PRICE_GWEI.testnet;
 }
 
-export function useUsername(): string {
-  const username = useSelector<AppState, AppState["user"]["username"]>(
-    (state) => state.user.username 
-  )
-  return username;
-}
-
-export const usePollReferralUserData = () => {
-  const dispatch = useAppDispatch();
-  const { slowRefresh } = useRefresh();
-  const { account } = useWeb3React();
-
-  useEffect(() => {
-    if (account) {
-      dispatch(fetchReferralUserDataAsync({ account }));
-    }
-  }, [dispatch, slowRefresh, account]);
-}
+export const fetchUserTokenBalance = async (
+  account: string,
+  contract: ethers.Contract
+) => {
+  const rawTokenBalance = await contract.balanceOf(account);
+  return new BigNumber(rawTokenBalance._hex).toJSON();
+};

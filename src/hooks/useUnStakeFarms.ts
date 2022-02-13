@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { unstakeFarm } from "utils/calls";
-import { useKrlContract } from "hooks/useContract";
+import { useAspContract } from "hooks/useContract";
 
 const useUnstakeFarms = (pid: number) => {
-  const masterChefContract = useKrlContract();
+  const masterChefContract = useAspContract();
 
   const handleUnstake = useCallback(
     async (amount: string) => {

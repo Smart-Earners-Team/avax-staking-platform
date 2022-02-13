@@ -1,73 +1,61 @@
 import React from "react";
-import { parseUnits } from "ethers/lib/utils";
-import { formatBigNumber } from "utils/formatBalance";
 import Button from "components/Button/Button";
 
 interface ModalInputProps {
-  max: string;
-  symbol: string;
   onSelectMax?: () => void;
   onChange: (e: React.FormEvent<HTMLInputElement>) => void;
-  placeholder?: string;
-  value: string;
-  addLiquidityUrl?: string;
-  inputTitle?: string;
-  decimals?: number;
+  stakeAmount: string;
+  daysToStake: string;
 }
 
 const ModalInput = ({
   onChange,
   onSelectMax,
-  value,
-  inputTitle,
-  max,
-  decimals = 18,
+  stakeAmount,
+  daysToStake,
 }: ModalInputProps) => {
-  const maxNum = Number.parseFloat(max);
-  const isBalanceZero = !isNaN(maxNum) && maxNum === 0;
-
-  const displayBalance = (balance: string) => {
-    if (isBalanceZero) {
-      return "0";
-    }
-
-    const balanceUnits = parseUnits(balance, decimals);
-    return formatBigNumber(balanceUnits, decimals, decimals);
-  };
-
   return (
-    <div className="relative">
-      <div
-        className={`flex flex-col rounded-lg shadow-sm py-2 w-full text-sm ${
-          isBalanceZero ? "text-red-600" : ""
-        }`}
-      >
-        <div className="flex justify-between mb-1">
-          <p>{inputTitle}</p>
-          <p>Balance: {displayBalance(max)}</p>
-        </div>
-        <div className="flex items-center justify-between">
-          <input
-            pattern={`^[0-9]*[.,]?[0-9]{0,${decimals}}$`}
-            inputMode="decimal"
-            step="any"
-            min="0"
-            onChange={onChange}
-            placeholder="0"
-            value={value}
-            className="p-1 text-base text-gray-900 outline-none ring ring-transparent rounded"
-          />
-          <Button onClick={onSelectMax} variant="outlined" className="!p-2 ring-transparent rounded-full bg-gray-100 text-gray-600">
+      <div className="mb-6">
+        <div className="relative block my-2">
+          <label htmlFor="amount" className="text-sm mb-2 block">
+            Amount to Stake
+          </label>
+          <Button
+            onClick={onSelectMax}
+            type="button"
+            variant="outlined"
+            className="!p-1 absolute shadow-md top-1/2 right-4 text-sm ring-transparent bg-gray-100
+              text-gray-600"
+          >
             Max
           </Button>
+          <input
+            autoComplete="off"
+            onChange={onChange}
+            type="text"
+            name="amount"
+            id="amount"
+            value={stakeAmount}
+            className="border-none rounded-sm transition-colors duration-300 border-gray-300
+            focus:ring-gray-400 pt-3 pb-1 w-full outline-none ring-2 ring-gray-300 px-2"
+          />
+        </div>
+        <div className="relative block my-2">
+          <label htmlFor="days" className="text-sm mb-2 block">
+            Days to Stake
+          </label>
+          <input
+            autoComplete="off"
+            onChange={onChange}
+            type="text"
+            name="days"
+            id="days"
+            value={daysToStake}
+            className="border-none rounded-sm transition-colors duration-300 border-gray-300
+            focus:ring-gray-400 pt-3 pb-1 w-full outline-none ring-2 ring-gray-300 px-2"
+          />
         </div>
       </div>
-      {isBalanceZero && (
-        <p className="text-xs text-red-400">
-          There are no tokens to stake.
-        </p>
-      )}
-    </div>
   );
 };
 

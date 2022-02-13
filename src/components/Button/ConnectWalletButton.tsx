@@ -8,7 +8,7 @@ import useWallet from "hooks/useWallet";
 
 const ConnectWalletButton = ({action}: ButtonProps & { action?: (...args: any[]) => void }) => {
   const {
-    krlWallet: { active, error, retry },
+    aspWallet: { active, error, retry },
   } = useAppContext();
   const { account } = useActiveWeb3React();
   const { onPresentConnectModal } = useWallet();
@@ -39,7 +39,7 @@ const ConnectWalletButton = ({action}: ButtonProps & { action?: (...args: any[])
       {!active && error && (
         <Button
           variant="outlined"
-          className="ring-white bg-primary-50 text-primary !px-3 !py-1 text-sm"
+          className="ring-white bg-primary-50 w-full text-primary !px-4 !py-2 text-sm"
           onClick={() => {
             if(action) action();
             retry();

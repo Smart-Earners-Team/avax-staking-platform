@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 import useActiveWeb3React from "./useActiveWeb3React";
-import { getBep20Contract, getKrlContract } from "utils/contractHelpers";
+import { getBep20Contract, getAspContract } from "utils/contractHelpers";
 
 export const useERC20 = (address: string) => {
   const { library } = useActiveWeb3React();
@@ -10,7 +10,7 @@ export const useERC20 = (address: string) => {
   );
 };
 
-export const useKrlContract = () => {
+export const useAspContract = () => {
   const { library } = useActiveWeb3React();
-  return useMemo(() => getKrlContract(library?.getSigner()), [library]);
+  return useMemo(() => getAspContract(library?.getSigner()), [library]);
 };

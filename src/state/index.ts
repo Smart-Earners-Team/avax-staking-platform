@@ -2,11 +2,11 @@ import { configureStore } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
 import cloneDeep from "lodash/cloneDeep";
 import { useDispatch } from "react-redux";
-import farmsReducer from "./farms";
+import poolsReducer from "./pools";
 import { updateVersion } from "./global/actions";
 import user, { initialState as userInitialState } from "./user/reducer";
 
-const PERSISTED_KEYS: string[] = ["user", "transactions"];
+const PERSISTED_KEYS: string[] = ["user"];
 
 const safeCloneDeep = <T>(state: T) => {
   try {
@@ -20,7 +20,7 @@ const safeCloneDeep = <T>(state: T) => {
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer: {
-    farms: farmsReducer,
+    pools: poolsReducer,
     user,
   },
   middleware: (getDefaultMiddleware) => [

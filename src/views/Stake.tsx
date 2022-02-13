@@ -1,12 +1,17 @@
 import React from "react";
 import Layout from "components/Layout";
 import SEO from "components/SEO";
-import StakingTable from "components/Tables/StakingTable";
+import StakingTable from "components/Table/StakingTable";
 import FaqAccordion from "components/widgets/Accordion/FaqAccordion";
 import { stakingFaqs } from "globalData";
-import StakeForm from "components/Forms/StakeForm";
+import StakeAction from "components/Table/StakeAction";
+import { usePools, usePoolsWithUserData } from "state/pools/hooks";
 
 export default function Stake() {
+  // fetch user data async;
+  usePoolsWithUserData();
+  const pools = usePools();
+
   return (
     <Layout>
       <SEO
@@ -46,8 +51,8 @@ export default function Stake() {
           <div className="flex flex-col items-center lg:flex-row-reverse md:items-start gap-4">
             <div className="w-full overflow-x-auto">
               <h3 className="text-center text-gray-600">MY STAKES</h3>
-              <StakingTable />
-              <StakeForm className=" mt-8 shadow-md px-4 mx-auto lg:mx-0" />
+              <StakingTable pools={pools} />
+              <StakeAction />
             </div>
             <div className="w-full max-w-sm lg:max-w-xs flex-shrink-0 p-2 mx-auto">
               <h3 className="text-center text-gray-600">Stake FAQ</h3>

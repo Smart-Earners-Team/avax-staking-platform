@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import { harvestFarm } from "utils/calls";
-import { useKrlContract } from "hooks/useContract";
+import { useAspContract } from "hooks/useContract";
 
 const useHarvestFarm = (farmPid: number) => {
-  const krlContract = useKrlContract();
+  const krlContract = useAspContract();
 
   const handleHarvest = useCallback(async () => {
     await harvestFarm(krlContract, farmPid);

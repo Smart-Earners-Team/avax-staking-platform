@@ -1,10 +1,8 @@
 import React from "react";
 import Layout from "components/Layout";
 import SEO from "components/SEO";
-import StakingTable from "components/Tables/StakingTable";
 import FaqAccordion from "components/widgets/Accordion/FaqAccordion";
 import { auctionFaqs } from "globalData";
-import StakeForm from "components/Forms/StakeForm";
 
 export default function Auction() {
   return (
@@ -20,21 +18,25 @@ export default function Auction() {
         <div className="max-w-4xl px-8 mx-auto mb-16">
           <h1>Daily Auction Lobby!</h1>
           <p>
-            Notes...
+            One of the benefits of Staking ASP is AVAX dividends. At the end of
+            each day the AVAX dividends pool will be calculated and allocated to
+            all the open stakes based on their stake amount. The ASP dividends
+            pool comes from the total daily entry of auction lobby.The only way
+            to receive AVAX Dividends is having open stakes.
           </p>
         </div>
         <div className="my-8">
           <div className="flex flex-col items-center lg:flex-row-reverse md:items-start gap-4">
             <div className="w-full overflow-x-auto">
               <h3 className="text-center text-gray-600">Auctions</h3>
-              <StakingTable />
-              <StakeForm className=" mt-8 shadow-md px-4 mx-auto lg:mx-0" />
+              <hr />
+              {/* <StakingTable /> */}
             </div>
             <div className="max-w-sm lg:max-w-xs p-2 mx-auto">
               <h3 className="text-center text-gray-600">Auction FAQ</h3>
               <FaqAccordion
                 faqs={auctionFaqs}
-                expandedUuids={["what_is_staking"]}
+                expandedUuids={["what_are_auction_lobbies"]}
               />
             </div>
           </div>

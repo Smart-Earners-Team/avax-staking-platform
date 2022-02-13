@@ -13,13 +13,13 @@ export const BASE_BSC_SCAN_URLS = {
 export const BASE_BSC_SCAN_URL = BASE_BSC_SCAN_URLS[ChainId.MAINNET];
 
 export const addresses = {
-  kryptolite: {
-    97: '',
-    56: '0x69A3C92cE7d543f6aaC7630E0e4Df265BdBB8c0D',
+  aspstake: {
+    97: '0xd1E177d9ADE89434c43f09489Dcf7F0475599DD3',
+    56: '',
   },
   multiCall: {
     56: '0xfF6FD90A470Aaa0c1B8A54681746b07AcdFedc9B',
-    97: '',
+    97: '0x8F3273Fb89B075b1645095ABaC6ed17B2d4Bc576',
   },
 };
 
@@ -59,6 +59,8 @@ export const networkList = {
 };
 
 // default allowed slippage, in bips
-export const INITIAL_ALLOWED_SLIPPAGE = 50
+export const INITIAL_ALLOWED_SLIPPAGE = 50;
 // 20 minutes, denominated in seconds
-export const DEFAULT_DEADLINE_FROM_NOW = 60 * 20
+export const DEFAULT_DEADLINE_FROM_NOW = 60 * 20;
+
+export const ASP_DECIMALS = 8;

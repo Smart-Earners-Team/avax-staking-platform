@@ -1,8 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import {
-  fetchReferralUserDataAsync,
   updateGasPrice,
-  updateUsername
 } from './actions';
 
 import { GAS_PRICE_GWEI } from './hooks/helpers';
@@ -21,12 +19,5 @@ export default createReducer(initialState, (builder) =>
   builder
     .addCase(updateGasPrice, (state, action) => {
       state.gasPrice = action.payload.gasPrice
-    })
-    .addCase(updateUsername, (state, action) => {
-      state.username = action.payload.username
-    })
-    // Update farms with live data
-    .addCase(fetchReferralUserDataAsync.fulfilled, (state, action) => {
-      state.username = action.payload.username
     })
 )

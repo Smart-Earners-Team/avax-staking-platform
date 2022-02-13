@@ -58,7 +58,7 @@ const ConnectModal = ({
     : sortedConfig.slice(0, displayCount);
 
   const {
-    krlWallet: { isConnecting, active }
+    aspWallet: { isConnecting, active }
   } = useAppContext();
 
   return (
