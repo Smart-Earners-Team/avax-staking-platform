@@ -2,6 +2,7 @@ import { IconBaseProps } from "react-icons";
 import { FaTelegram, FaTwitter } from "react-icons/fa";
 
 export const siteName = "ASP STAKING PLATFORM";
+export const siteUrl = "https://avaxstakingplatform.com/";
 
 export const links = [
   {

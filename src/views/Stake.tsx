@@ -5,12 +5,11 @@ import StakingTable from "components/Table/StakingTable";
 import FaqAccordion from "components/widgets/Accordion/FaqAccordion";
 import { stakingFaqs } from "globalData";
 import StakeAction from "components/Table/StakeAction";
-import { usePools, usePoolsWithUserData } from "state/pools/hooks";
+import { usePoolsWithUserData } from "state/pools/hooks";
 
 export default function Stake() {
   // fetch user data async;
   usePoolsWithUserData();
-  const pools = usePools();
 
   return (
     <Layout>
@@ -21,14 +20,20 @@ export default function Stake() {
             Additionally, Stakers are rewarded AVAX tokens from the daily Lobbies based off the
             percentage of total tokens beign staked."
       />
-      <div className="px-4 pt-20 max-w-screen-2xl mx-auto">
-        <div className="max-w-4xl px-8 mx-auto mb-16">
-          <h1>Stake ASP and earn AVAX tokens daily!</h1>
-          <p>
-            Stake your ASP tokens within the Staking Portal and earn daily
-            interest. Additionally, Stakers are rewarded AVAX tokens from the
-            daily Lobbies based off the percentage of total tokens beign staked.
-          </p>
+      <div className="px-4 max-w-screen-2xl mx-auto">
+        <div
+          className="px-8 py-16 mx-auto bg-[url('../public/images/stake.png')]
+          bg-no-repeat bg-left-bottom bg-contain"
+        >
+          <div className="max-w-4xl mx-auto bg-white p-5">
+            <h1>Stake ASP and earn AVAX tokens daily!</h1>
+            <p>
+              Stake your ASP tokens within the Staking Portal and earn daily
+              interest. Additionally, Stakers are rewarded AVAX tokens from the
+              daily Lobbies based off the percentage of total tokens beign
+              staked.
+            </p>
+          </div>
         </div>
         <div
           className="bg-white shadow-md flex flex-col sm:flex-row justify-between divide-y
@@ -51,7 +56,7 @@ export default function Stake() {
           <div className="flex flex-col items-center lg:flex-row-reverse md:items-start gap-4">
             <div className="w-full overflow-x-auto">
               <h3 className="text-center text-gray-600">MY STAKES</h3>
-              <StakingTable pools={pools} />
+              <StakingTable />
               <StakeAction />
             </div>
             <div className="w-full max-w-sm lg:max-w-xs flex-shrink-0 p-2 mx-auto">

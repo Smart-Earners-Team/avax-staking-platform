@@ -1,4 +1,5 @@
 import BigNumber from "bignumber.js";
+import { Contract } from "@ethersproject/contracts";
 export type SerializedBigNumber = string;
 
 export interface SerializedPoolsState {
@@ -8,6 +9,7 @@ export interface SerializedPoolsState {
 
 export interface SerializedPoolUserData {
   pid: number;
+  index: number;
   startDay: SerializedBigNumber;
   endDay: SerializedBigNumber;
   progress: number;
@@ -19,7 +21,7 @@ export interface SerializedPoolUserData {
   daysToStake: SerializedBigNumber;
 }
 
-export interface DeserializedPoolUserData {
+export interface DeserializedPoolUserData extends PoolActionHelpers {
   pid: number;
   startDay: BigNumber;
   endDay: BigNumber;
@@ -32,6 +34,10 @@ export interface DeserializedPoolUserData {
   daysToStake: BigNumber;
 }
 
+interface PoolActionHelpers {
+  index: number;
+  action: (contract: Contract) => Promise<any>;
+}
 export interface DeserializedPoolsState {
   data: DeserializedPoolUserData[];
   userDataLoaded: boolean;

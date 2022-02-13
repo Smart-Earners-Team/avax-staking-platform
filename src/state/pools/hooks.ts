@@ -13,12 +13,15 @@ import {
 } from "state/types-pool";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
 import { fetchPoolUserStakeCount } from "./fetchPoolUser";
+import { Contract } from "@ethersproject/contracts";
+import { unstakePool } from "utils/calls";
 
 const deserializePoolUserData = (
   pool: SerializedPoolUserData
 ): DeserializedPoolUserData => {
   return {
     pid: Number(pool.pid),
+    index: pool.index,
     startDay: pool ? new BigNumber(pool.startDay) : BIG_ZERO,
     endDay: pool ? new BigNumber(pool.endDay) : BIG_ZERO,
     progress: pool ? Number(pool.progress) : 0,
@@ -28,6 +31,7 @@ const deserializePoolUserData = (
     bonus: pool ? new BigNumber(pool.bonus) : BIG_ZERO,
     paidAmount: pool ? new BigNumber(pool.paidAmount) : BIG_ZERO,
     daysToStake: pool ? new BigNumber(pool.daysToStake) : BIG_ZERO,
+    action: (contract: Contract) => unstakePool(contract, pool.pid, pool.index)
   };
 };
 

@@ -1,7 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { ProgressBar } from "react-step-progress-bar";
 import "react-step-progress-bar/styles.css";
-import { useTable, usePagination, Cell } from "react-table";
+import { useTable, Cell } from "react-table";
 import Button from "components/Button/Button";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
 import { useAspContract } from "hooks/useContract";
@@ -10,20 +10,12 @@ import { fetchPoolUserStakeCount } from "state/pools/fetchPoolUser";
 import { fetchPoolsUserDataAsync } from "state/pools";
 import { useAppDispatch } from "state";
 import { usePools } from "state/pools/hooks";
+import { fetchUserAuctionsData } from "state/auctions/fetchAuctionUser";
 
-type Accessor =
-  | "start"
-  | "end"
-  | "progress"
-  | "amountStaked"
-  | "shares"
-  | "dividends"
-  | "bonus"
-  | "paidAmount"
-  | "action";
+type Accessor = "day" | "pool" | "state" | "recieve" | "entry" | "action";
 
-export default function StakingTable() {
-  const { userDataLoaded, data } = usePools();
+export default function AuctionTable() {
+  const { userDataLoaded } = usePools();
   const dispatch = useAppDispatch();
   const { active, account, library } = useActiveWeb3React();
   const aspContract = useAspContract();
@@ -40,20 +32,21 @@ export default function StakingTable() {
     }
   };
 
+  if(account && library) {
+      fetchUserAuctionsData(account, [0], library.getSigner());
+  }
   const tableRowsData = useMemo(
-    () =>
-      data.map((pool) => ({
-        start: pool.startDay.toJSON(),
-        end: pool.endDay.toJSON(),
-        progress: pool.progress.toString(),
-        amountStaked: pool.stakedAmount.toJSON(),
-        shares: pool.shares.toJSON(),
-        dividends: pool.dividends.toJSON(),
-        bonus: pool.bonus.toJSON(),
-        paidAmount: pool.paidAmount.toJSON(),
-        action: pool.action,
-      })),
-    [data]
+    () => [
+      {
+        day: "1",
+        pool: "200",
+        state: "OPEN",
+        recieve: "24 ASP",
+        entry: "2",
+        action: () => {},
+      },
+    ],
+    []
   );
 
   const columns: {
@@ -62,44 +55,24 @@ export default function StakingTable() {
   }[] = useMemo(
     () => [
       {
-        Header: "Start",
-        accessor: "start",
+        Header: "Day",
+        accessor: "day",
       },
       {
-        Header: "End",
-        accessor: "end",
+        Header: "Pool",
+        accessor: "pool",
       },
       {
-        Header: "Progress",
-        accessor: "progress",
+        Header: "State",
+        accessor: "state",
       },
       {
-        Header: (
-          <>
-            Amount <br /> Staked
-          </>
-        ),
-        accessor: "amountStaked",
+        Header: "You'll Recieve",
+        accessor: "recieve",
       },
       {
-        Header: "Shares",
-        accessor: "shares",
-      },
-      {
-        Header: "Dividends",
-        accessor: "dividends",
-      },
-      {
-        Header: (
-          <>
-            Bonus Day Rewads + <br /> Stake Interest
-          </>
-        ),
-        accessor: "bonus",
-      },
-      {
-        Header: "Paid Amount",
-        accessor: "paidAmount",
+        Header: "Your Entry",
+        accessor: "entry",
       },
       {
         Header: "Action",
@@ -109,33 +82,16 @@ export default function StakingTable() {
     []
   );
 
-  const tableInstance = useTable(
-    {
-      columns,
-      data: tableRowsData,
-      initialState: { pageIndex: 0 },
-      autoResetPage: false,
-    },
-    usePagination
-  );
+  const tableInstance = useTable({
+    columns,
+    data: tableRowsData,
+  });
   const {
     getTableProps,
     getTableBodyProps,
     headerGroups,
     prepareRow,
-    page, // Instead of using 'rows', we'll use page,
-    // which has only the rows for the active page
-
-    // The rest of these things are super handy, too ;)
-    canPreviousPage,
-    canNextPage,
-    pageOptions,
-    pageCount,
-    gotoPage,
-    nextPage,
-    previousPage,
-    setPageSize,
-    state: { pageIndex, pageSize },
+    rows,
   } = tableInstance;
 
   const handleStakeEnd = async (cell: Cell<typeof tableRowsData[0], any>) => {
@@ -197,8 +153,9 @@ export default function StakingTable() {
             {...getTableBodyProps()}
             className="bg-white divide-y divide-gray-200 w-full"
           >
-            {userDataLoaded && page.length > 0 && (
-              page.map((row) => {
+            {userDataLoaded &&
+              rows.length > 0 &&
+              rows.map((row) => {
                 prepareRow(row);
                 return (
                   <tr {...row.getRowProps()} className="hover:bg-gray-100">
@@ -229,12 +186,12 @@ export default function StakingTable() {
                             {
                               <Button
                                 onClick={() => handleStakeEnd(cell)}
-                                disabled={
-                                  pendingTx && pendingTx[cell.row.id] === true
+                                disabled={true
+                                //   pendingTx && pendingTx[cell.row.id] === true
                                 }
                                 className="py-1 px-2"
                               >
-                                End stake
+                                Enter
                               </Button>
                             }
                           </td>
@@ -250,14 +207,10 @@ export default function StakingTable() {
                     })}
                   </tr>
                 );
-              })
-            )}
-            {userDataLoaded && page.length <= 0 && (
+              })}
+            {userDataLoaded && rows.length <= 0 && (
               <tr>
-                <td
-                  colSpan={9}
-                  className="text-center py-5 text-sm bg-gray-50"
-                >
+                <td colSpan={9} className="text-center py-5 text-sm bg-gray-50">
                   No records to show. Stake some ASP
                 </td>
               </tr>
@@ -281,91 +234,6 @@ export default function StakingTable() {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 flex flex-col items-center">
-        <div className="text-sm">
-          <span>
-            Page{" "}
-            <strong>
-              {pageIndex + 1} of {pageOptions.length}
-            </strong>{" "}
-          </span>
-          <span>
-            | Go to page:{" "}
-            <input
-              type="number"
-              defaultValue={pageIndex + 1}
-              onChange={(e) => {
-                const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                gotoPage(page);
-              }}
-              className="w-20 border-b-2 outline-none border-gray-500"
-            />
-          </span>{" "}
-          <select
-            value={pageSize}
-            onChange={(e) => {
-              setPageSize(Number(e.target.value));
-            }}
-            className="w-20 border-b-2 outline-none border-gray-500"
-          >
-            {[10, 20, 30, 40, 50].map((pageSize) => (
-              <option key={pageSize} value={pageSize}>
-                Show {pageSize}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div className="my-4">
-          <ul className="flex pl-0 list-none">
-            <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
-                onClick={() => gotoPage(0)}
-                disabled={!canPreviousPage}
-              >
-                First
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
-                onClick={() => previousPage()}
-                disabled={!canPreviousPage}
-              >
-                Previous
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
-                onClick={() => nextPage()}
-                disabled={!canNextPage}
-              >
-                Next
-              </Button>
-            </ListItem>
-            <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
-                onClick={() => gotoPage(pageCount - 1)}
-                disabled={!canNextPage}
-              >
-                Last
-              </Button>
-            </ListItem>
-          </ul>
-        </div>
-      </div>
     </div>
   );
 }
-
-const ListItem = (props: { children: React.ReactNode }) => (
-  <li className="relative block leading-tight bg-white border border-gray-300 text-blue-700 ml-1">
-    {props.children}
-  </li>
-);

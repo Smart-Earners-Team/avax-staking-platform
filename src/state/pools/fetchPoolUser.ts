@@ -24,6 +24,7 @@ export const fetchUserPoolsData = async (
 
       return {
         stakeId,
+        index: i,
         stakedSuns: new BigNumber(stakedSuns._hex)
           .div(BIG_TEN.pow(ASP_DECIMALS))
           .toJSON(),

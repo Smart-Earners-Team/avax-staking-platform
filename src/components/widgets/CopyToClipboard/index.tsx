@@ -32,7 +32,7 @@ export default function CopyToClipboard({
   return (
     <div>
       <div className="relative p-5 mb-4 md:mb-8 rounded-lg bg-gray-100 max-w-lg flex mx-auto">
-        <pre className="overflow-x-scroll md:overflow-x-visible p-1 pl-4 flex-1 text-lg md:text-xl text-gray-700">
+        <pre className="overflow-x-scroll p-1 pl-4 flex-1 text-lg md:text-xl text-gray-700">
           {title && `${title}:`}{" "}
           <code ref={codeElement} onClick={copyAddress}>
             {content}
