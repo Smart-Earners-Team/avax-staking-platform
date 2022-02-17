@@ -1,13 +1,13 @@
 import { RecognizedChainId } from "./types";
 
 export enum ChainId {
-  MAINNET = 56,
+  MAINNET = 43114,
   TESTNET = 97,
 }
 
 export const BASE_BSC_SCAN_URLS = {
-  [ChainId.MAINNET]: "https://bscscan.com",
-  [ChainId.TESTNET]: "https://testnet.bscscan.com",
+  [ChainId.MAINNET]: "https://snowtrace.io",
+  [ChainId.TESTNET]: "https://testnet.snowtrace.io",
 };
 
 export const BASE_BSC_SCAN_URL = BASE_BSC_SCAN_URLS[ChainId.MAINNET];
@@ -15,16 +15,12 @@ export const BASE_BSC_SCAN_URL = BASE_BSC_SCAN_URLS[ChainId.MAINNET];
 export const addresses = {
   aspstake: {
     97: '0xd1E177d9ADE89434c43f09489Dcf7F0475599DD3',
-    56: '',
-  },
-  multiCall: {
-    56: '0xfF6FD90A470Aaa0c1B8A54681746b07AcdFedc9B',
-    97: '0x8F3273Fb89B075b1645095ABaC6ed17B2d4Bc576',
+    43114: '0xb3127298c77b6d389217d985f4b7197388334df4',
   },
 };
 
 export const RecognizedChainIdList: RecognizedChainId[] = [
-  1, 2, 3, 4, 42, 56, 97,
+  1, 2, 3, 4, 42, 56, 97, 43114,
 ];
 
 export const networkList = {
@@ -55,6 +51,10 @@ export const networkList = {
   97: {
     url: "https://data-seed-prebsc-1-s1.binance.org:8545/",
     name: "Binance Smart Chain - Testnet",
+  },
+  43114: {
+    url: "https://api.avax.network/ext/bc/C/rpc",
+    name: "Avalanche Mainnet",
   },
 };
 

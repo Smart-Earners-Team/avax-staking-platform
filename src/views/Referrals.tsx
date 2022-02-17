@@ -1,7 +1,7 @@
 import React from "react";
 import Layout from "components/Layout";
 import SEO from "components/SEO";
-import CopyToClipboard from "components/widgets/CopyToClipboard";
+import CopyToClipboard from "components/widgets/Utils";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
 import { siteUrl } from "globalData";
 
@@ -16,7 +16,7 @@ export default function Referrals() {
             Lobby Purchase. As a referrer you will earn an extra 10%. There are no limits on number
             nor the amount of referrals that you can get."
       />
-      <div className="px-4 py-20 max-w-3xl mx-auto text-center">
+      <div className="px-4 py-20 max-w-3xl mx-auto text-center bg-gradient-to-b from-white">
         <h1>Refer and Earn More</h1>
         <p>
           Your referrals will earn an extra 5% minted ASP tokens on their
@@ -25,9 +25,9 @@ export default function Referrals() {
           get.
         </p>
         <div className="mt-12">
-          <div className="text-2xl text-gray-600 my-4">
+          <h3 className="text-2xl text-gray-800 my-4">
             Copy your referral link
-          </div>
+          </h3>
           <div>
             {account && (
               <CopyToClipboard content={`${siteUrl}?ref=${account}`} />

@@ -17,11 +17,10 @@ export default function Auction() {
         title="Stake to earn more"
         pageDescription="Stake your AVAX tokens within the Auction Portal and earn daily interest.
             Additionally, Stakers are rewarded ASP tokens from the daily Lobbies based off the
-            percentage of total tokens beign staked."
+            percentage of total tokens being staked."
       />
       <div className="px-4 pt-20 max-w-screen-2xl mx-auto">
-        <div className="px-8 py-16 mx-auto bg-[url('../public/images/auction-lobby.png')]
-          bg-no-repeat bg-left-bottom bg-contain">
+        <div className=" px-4 md:px-8 py-16 mx-auto">
           <div className="max-w-4xl mx-auto bg-white/70 p-5">
             <h1>Daily Auction Lobby!</h1>
             <p>

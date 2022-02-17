@@ -1,9 +1,9 @@
-import { Token } from "config/entities/token";
 import JSBI from "jsbi";
 
 export interface Address {
   97?: string;
-  56: string;
+  56?: string;
+  43114?: string;
 }
 
 // exports for external consumption
@@ -15,7 +15,7 @@ export enum Rounding {
   ROUND_UP = 2,
 }
 
-export type RecognizedChainId = 1 | 2 | 3 | 4 | 42 | 56 | 97;
+export type RecognizedChainId = 1 | 2 | 3 | 4 | 42 | 56 | 97 | 43114;
 
 export interface SerializedToken {
   chainId: number;

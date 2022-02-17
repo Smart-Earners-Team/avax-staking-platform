@@ -2,6 +2,7 @@
   "name": "avax-staking-app",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://aspstake.io",
   "dependencies": {
     "@binance-chain/bsc-connector": "^1.0.0",
     "@reduxjs/toolkit": "^1.7.2",
@@ -29,6 +30,7 @@
     "react": "^17.0.2",
     "react-accessible-accordion": "^4.0.0",
     "react-app-rewired": "^2.1.11",
+    "react-countdown": "^2.3.2",
     "react-countup": "^6.1.0",
     "react-dom": "^17.0.2",
     "react-helmet": "^6.1.0",

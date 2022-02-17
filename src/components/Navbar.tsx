@@ -20,7 +20,8 @@ export default function Navbar() {
 
   return (
     <div className="w-full text-white bg-primary-500 py-5">
-      <div className="flex flex-col max-w-screen-xl px-4 mx-auto md:items-center md:justify-between md:flex-row md:px-6 lg:px-8">
+      <div className="flex flex-col max-w-screen-xl px-4 mx-auto lg:items-center lg:justify-between
+        lg:flex-row md:px-6">
         <div className="flex flex-row items-center justify-between">
           <Link
             to="/"
@@ -30,7 +31,7 @@ export default function Navbar() {
             {siteName}
           </Link>
           <button
-            className="rounded-lg md:hidden p-1 hover:bg-gray-200 focus:outline-none
+            className="rounded-lg lg:hidden p-1 hover:bg-gray-200 focus:outline-none
               focus:bg-gray-100 hover:text-primary focus:text-primary"
             onClick={toggleMenu}
           >
@@ -55,13 +56,13 @@ export default function Navbar() {
         <nav
           className={`${
             open ? "block" : "hidden"
-          } md:block`}
+          } lg:block`}
         >
-          <ul className="flex flex-col flex-grow pb-4 md:pb-0 md:flex md:justify-end md:flex-row">
+          <ul className="flex flex-col flex-grow pb-4 lg:pb-0 lg:flex-row lg:justify-end lg:items-center">
             {links.map(({ name, ...rest }, i) => (
-              <li key={name} className="inline-block mt-2 md:mt-0 md:ml-3">
+              <li key={name} className="inline-block mt-2 lg:mt-0 lg:ml-3">
                 <Link
-                  className="px-5 block py-3 text-sm font-semibold bg-transparent rounded-lg
+                  className="px-5 block py-3 lg:text-sm font-semibold bg-transparent rounded-lg
                 hover:text-gray-900 focus:text-gray-900 hover:bg-gray-200
                 focus:bg-gray-200 focus:outline-none focus:shadow-outline transition-colors duration-300"
                   {...rest}
@@ -70,7 +71,7 @@ export default function Navbar() {
                 </Link>
               </li>
             ))}
-            <li className="inline-block mt-2 md:mt-0 md:ml-4">
+            <li className="inline-block mt-2 lg:mt-0 lg:ml-3">
               <ConnectWalletButton action={closeMenu} />
             </li>
           </ul>

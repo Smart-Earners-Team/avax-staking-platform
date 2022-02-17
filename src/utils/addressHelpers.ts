@@ -8,4 +8,3 @@ export const getAddress = (address: Address): string => {
 };
 
 export const getAspAddress = () => getAddress(addresses.aspstake);
-export const getMulticallAddress = () => getAddress(addresses.multiCall);

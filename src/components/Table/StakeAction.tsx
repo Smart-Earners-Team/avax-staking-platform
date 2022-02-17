@@ -9,6 +9,7 @@ import { fetchPoolsUserDataAsync } from "state/pools";
 import { useAppDispatch } from "state";
 import { fetchPoolUserStakeCount } from "state/pools/fetchPoolUser";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
+import useWallet from "hooks/useWallet";
 
 const StakeAction = () => {
   // TODO: change
@@ -19,15 +20,25 @@ const StakeAction = () => {
     aspWallet: { balance },
   } = useAppContext();
   const dispatch = useAppDispatch();
-  const { account, library } = useActiveWeb3React();
+  const { account, library, active, error } = useActiveWeb3React();
+  const { onPresentConnectModal } = useWallet();
 
   const handleStake = async (amount: string, days: string) => {
     // in serialized form
     if (account && library) {
       await onStake(amount, days);
-      const indexs = await fetchPoolUserStakeCount(account, library.getSigner());
+      const indexs = await fetchPoolUserStakeCount(
+        account,
+        library.getSigner()
+      );
       const stakeIndexs = new Array(indexs).fill(0).map((e, i) => i);
-      dispatch(fetchPoolsUserDataAsync({ account, signer: library.getSigner(), stakeIndexs }));
+      dispatch(
+        fetchPoolsUserDataAsync({
+          account,
+          signer: library.getSigner(),
+          stakeIndexs,
+        })
+      );
     }
   };
   /* 
@@ -53,13 +64,26 @@ const StakeAction = () => {
 
   const renderStakingButtons = () => {
     return (
-      <Button
-        variant="secondary"
-        className="py-2 px-5 w-full block my-8 max-w-xs mx-auto"
-        onClick={onPresentDeposit}
-      >
-        Stake ASP
-      </Button>
+      <>
+        {active && !error && (
+          <Button
+            variant="secondary"
+            className="py-2 px-5 w-full block my-8 max-w-xs mx-auto"
+            onClick={onPresentDeposit}
+          >
+            Stake ASP
+          </Button>
+        )}
+        {!active && !error && (
+          <Button
+            onClick={onPresentConnectModal}
+            variant="secondary"
+            className="py-2 px-5 w-full block my-8 max-w-xs mx-auto"
+          >
+            Connect wallet
+          </Button>
+        )}
+      </>
     );
   };
 

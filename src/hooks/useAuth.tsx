@@ -51,7 +51,7 @@ const useAuth = () => {
             } else {
               toastError(
                 "Unable to connect",
-                "Something is went wrong."
+                "Something went wrong."
               );
             }
           }

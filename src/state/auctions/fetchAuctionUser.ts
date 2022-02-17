@@ -14,11 +14,14 @@ export const fetchUserAuctionsData = async (
       // get the amount of avax staked for this day
       const { rawAmount/* , referrerAddr  */} = await getAspContract(
         signer
-      ).xfLobbyEntry(account, day, 0);
+      ).xfLobbyEntry(account, day, "0");
+
+      console.log(rawAmount);
+      
       const avaxAmount = new BigNumber(rawAmount._hex).div(BIG_TEN.pow(18));
       
      // get the total ppol
-     const rawPoolAmount = await getAspContract(signer).xfLobby(0);
+     const rawPoolAmount = await getAspContract(signer).xfLobby("0");
      const pool = new BigNumber(rawPoolAmount._hex).div(BIG_TEN.pow(18));
      const state = true;
 

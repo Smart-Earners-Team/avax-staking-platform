@@ -18,19 +18,19 @@ export default function Stake() {
         title="Stake to earn more"
         pageDescription="Stake your ASP tokens within the Staking Portal and earn daily interest.
             Additionally, Stakers are rewarded AVAX tokens from the daily Lobbies based off the
-            percentage of total tokens beign staked."
+            percentage of total tokens being staked."
       />
       <div className="px-4 max-w-screen-2xl mx-auto">
         <div
-          className="px-8 py-16 mx-auto bg-[url('../public/images/stake.png')]
-          bg-no-repeat bg-left-bottom bg-contain"
+          className="px-4 md:px-8 py-16 mx-auto bg-[url('../public/images/stake.png')]
+          bg-no-repeat bg-right-bottom bg-contain"
         >
           <div className="max-w-4xl mx-auto bg-white p-5">
             <h1>Stake ASP and earn AVAX tokens daily!</h1>
             <p>
               Stake your ASP tokens within the Staking Portal and earn daily
               interest. Additionally, Stakers are rewarded AVAX tokens from the
-              daily Lobbies based off the percentage of total tokens beign
+              daily Lobbies based off the percentage of total tokens being
               staked.
             </p>
           </div>
@@ -60,7 +60,7 @@ export default function Stake() {
               <StakeAction />
             </div>
             <div className="w-full max-w-sm lg:max-w-xs flex-shrink-0 p-2 mx-auto">
-              <h3 className="text-center text-gray-600">Stake FAQ</h3>
+              <h3 className="text-center text-gray-600">Staking FAQ</h3>
               <FaqAccordion
                 faqs={stakingFaqs}
                 expandedUuids={["what_is_staking"]}

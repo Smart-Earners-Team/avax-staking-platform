@@ -10,9 +10,9 @@ import { fetchPoolUserStakeCount } from "state/pools/fetchPoolUser";
 import { fetchPoolsUserDataAsync } from "state/pools";
 import { useAppDispatch } from "state";
 import { usePools } from "state/pools/hooks";
-import { fetchUserAuctionsData } from "state/auctions/fetchAuctionUser";
+// import { fetchUserAuctionsData } from "state/auctions/fetchAuctionUser";
 
-type Accessor = "day" | "pool" | "state" | "recieve" | "entry" | "action";
+type Accessor = "day" | "pool" | "aspAvak" | "state" | "recieve" | "entry" | "action";
 
 export default function AuctionTable() {
   const { userDataLoaded } = usePools();
@@ -31,20 +31,20 @@ export default function AuctionTable() {
       setPendingTx((p) => ({ ...p, key: false }));
     }
   };
-
+/* 
   if(account && library) {
       fetchUserAuctionsData(account, [0], library.getSigner());
-  }
-  const tableRowsData = useMemo(
+  } */
+  const tableRowsData: object[] = useMemo(
     () => [
-      {
+      /* {
         day: "1",
         pool: "200",
         state: "OPEN",
         recieve: "24 ASP",
         entry: "2",
         action: () => {},
-      },
+      }, */
     ],
     []
   );
@@ -59,7 +59,7 @@ export default function AuctionTable() {
         accessor: "day",
       },
       {
-        Header: "Pool",
+        Header: "ASP POOL",
         accessor: "pool",
       },
       {
@@ -67,7 +67,11 @@ export default function AuctionTable() {
         accessor: "state",
       },
       {
-        Header: "You'll Recieve",
+        Header: "ASP/AVAX",
+        accessor: "aspAvak",
+      },
+      {
+        Header: "ASP received ",
         accessor: "recieve",
       },
       {
@@ -75,7 +79,7 @@ export default function AuctionTable() {
         accessor: "entry",
       },
       {
-        Header: "Action",
+        Header: "Status",
         accessor: "action",
       },
     ],
@@ -211,7 +215,7 @@ export default function AuctionTable() {
             {userDataLoaded && rows.length <= 0 && (
               <tr>
                 <td colSpan={9} className="text-center py-5 text-sm bg-gray-50">
-                  No records to show. Stake some ASP
+                  No active auction at this time check back later.
                 </td>
               </tr>
             )}

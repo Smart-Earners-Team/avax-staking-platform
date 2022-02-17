@@ -281,7 +281,7 @@ export default function StakingTable() {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 flex flex-col items-center">
+      <div className="mt-3 flex flex-col md:flex-row-reverse md:justify-center md:gap-3 items-center">
         <div className="text-sm">
           <span>
             Page{" "}

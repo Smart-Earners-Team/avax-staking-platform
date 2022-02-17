@@ -1,3 +1,4 @@
+import { siteUrl } from "globalData";
 import React from "react";
 import { Helmet } from "react-helmet";
 
@@ -14,11 +15,11 @@ export default function SEO({
   slug,
   lang = "en",
 }: SEOProps) {
-  const url = `${process.env.REACT_APP_FRONTEND_URL}${slug}`;
+  const url = siteUrl;
   const description =
     pageDescription || "ASP Community Staking Platform built on AVALANCHE";
   const metaImages = {
-    og: "asp-og-image-small.jpg",
+    og: "asp-og-image-large.jpg",
     twitter: "asp-og-image-small.jpg",
   };
   const getMetaImageUrl = (image: string) => `${url}images/${image}`;

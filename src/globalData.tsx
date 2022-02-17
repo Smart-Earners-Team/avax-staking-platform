@@ -2,7 +2,7 @@ import { IconBaseProps } from "react-icons";
 import { FaTelegram, FaTwitter } from "react-icons/fa";
 
 export const siteName = "ASP STAKING PLATFORM";
-export const siteUrl = "https://avaxstakingplatform.com/";
+export const siteUrl = "https://aspstake.io/";
 
 export const links = [
   {
@@ -20,7 +20,13 @@ export const links = [
   {
     name: "Referrals",
     to: "/referrals",
-  }
+  },
+  {
+    name: "Litepaper",
+    to: "https://aspstake.io/litepaper.pdf",
+    internal: true,
+
+  },
 ];
 
 export const stakingFaqs = [

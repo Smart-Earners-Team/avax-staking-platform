@@ -24,9 +24,6 @@ module.exports = {
           900: "#6B1F1F",
         },
       },
-      fontFamily: {
-        comfortaa: ["Comfortaa", "cursive"],
-      },
     },
   },
   plugins: [],

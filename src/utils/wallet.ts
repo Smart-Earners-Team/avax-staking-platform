@@ -3,7 +3,7 @@ import { BASE_BSC_SCAN_URL } from 'config/constants';
 import getRpcUrl from "./getRpcUrl";
 
 /**
- * Prompt the user to add BSC as a network on Metamask, or switch to BSC if the wallet is on a different network
+ * Prompt the user to add Avalanche as a network on Metamask, or switch to Avalanche if the wallet is on a different network
  * @returns {boolean} true if the setup succeeded, false otherwise
  */
 export const setupNetwork = async () => {
@@ -11,17 +11,17 @@ export const setupNetwork = async () => {
   if (provider) {
     const chainId = parseInt(process.env.REACT_APP_CHAIN_ID!, 10);
     try {
-      if (!provider.request) throw new Error("Can't setup the BSC network on metamask because window.ethereum.request is undefined");
+      if (!provider.request) throw new Error("Can't setup the Avalanche network on metamask because window.ethereum.request is undefined");
 
       await provider.request({
         method: "wallet_addEthereumChain",
         params: [
           {
             chainId: `0x${chainId.toString(16)}`,
-            chainName: "Binance Smart Chain Mainnet",
+            chainName: "Avalanche Network",
             nativeCurrency: {
-              name: "BNB",
-              symbol: "BNB",
+              name: "Avalanche",
+              symbol: "AVAX",
               decimals: 18,
             },
             rpcUrls: [getRpcUrl()],
@@ -36,7 +36,7 @@ export const setupNetwork = async () => {
     }
   } else {
     console.error(
-      "Can't setup the BSC network on metamask because window.ethereum is undefined"
+      "Can't setup the Avalanche network on metamask because window.ethereum is undefined"
     );
     return false;
   }
