@@ -74,7 +74,7 @@ export default function AppContext({
     if (address) {
       setRef(address);
     }
-  }, []);
+  }, [address]);
 
   const triedEager = useEagerConnect();
 
@@ -96,17 +96,6 @@ export default function AppContext({
       setBnbBal("0.000");
     }
   }, [account, library]);
-
-  useEffect(() => {
-    if (account && library) {
-      (async () => {
-        const bnb = await library.getBalance(account);
-        setBnbBal(formatFixedNumber(ethers.FixedNumber.from(bnb), 4, 18));
-      })();
-    } else {
-      setBnbBal("0.000");
-    }
-  });
 
   const handleRetry = () => {
     setIsConnecting(false);

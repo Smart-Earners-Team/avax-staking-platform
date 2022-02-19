@@ -11,8 +11,10 @@ export const useAspContract = () => {
     [library]
   );
   if (library) {
-    return (f = contract);
+    f = contract;
+    return f;
   } else {
-    return (f = null);
+    f = null;
+    return f;
   }
 };

@@ -2,7 +2,7 @@ import { BigNumber } from "bignumber.js";
 import Button from "components/Button/Button";
 import ModalActions from "components/widgets/Modal/ModalActions";
 import { ASP_DECIMALS } from "config/constants";
-import { isAddress, parseUnits } from "ethers/lib/utils";
+import { parseUnits } from "ethers/lib/utils";
 import useToast from "hooks/useToast";
 import React, { useCallback, useState } from "react";
 import { RiCloseLine } from "react-icons/ri";

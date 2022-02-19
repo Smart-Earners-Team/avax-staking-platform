@@ -1,5 +1,4 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { ethers } from "ethers";
 import { SerializedPoolsState } from "state/types-pool";
 import { fetchUserPoolsData } from "./fetchPoolUser";
 

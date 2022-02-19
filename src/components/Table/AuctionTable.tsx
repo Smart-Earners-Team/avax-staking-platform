@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import "react-step-progress-bar/styles.css";
 import { useTable } from "react-table";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
-import useToast from "hooks/useToast";
 import { useAppDispatch } from "state";
 import useEnterAuction from "hooks/useEnterAuction";
 import useModal from "components/widgets/Modal/useModal";
@@ -26,7 +25,7 @@ type Accessor =
   | "action";
 
 export default function AuctionTable() {
-  const { userDataLoaded, data: auctions } = useAuctions();
+  const { data: auctions } = useAuctions();
   const dispatch = useAppDispatch();
   const { account, library } = useActiveWeb3React();
   const {
@@ -34,7 +33,6 @@ export default function AuctionTable() {
     refAddress,
     currentDay,
   } = useAppContext();
-  const { toastSuccess, toastError } = useToast();
   const { onEnter } = useEnterAuction();
   const { onExit } = useExitAuction();
   // endstake transcation call
