@@ -3,6 +3,7 @@ import { save, load } from "redux-localstorage-simple";
 import cloneDeep from "lodash/cloneDeep";
 import { useDispatch } from "react-redux";
 import poolsReducer from "./pools";
+import auctionsReducer from "./auctions";
 import { updateVersion } from "./global/actions";
 import user, { initialState as userInitialState } from "./user/reducer";
 
@@ -22,6 +23,7 @@ const store = configureStore({
   reducer: {
     pools: poolsReducer,
     user,
+    auctions: auctionsReducer,
   },
   middleware: (getDefaultMiddleware) => [
     ...getDefaultMiddleware({ thunk: true }),

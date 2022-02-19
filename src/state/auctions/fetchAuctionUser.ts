@@ -2,8 +2,9 @@ import BigNumber from "bignumber.js";
 import { getAspContract } from "utils/contractHelpers";
 import { ethers, Signer } from "ethers";
 import { BIG_TEN } from "utils/bigNumber";
+import spreadToArray from "utils/spreadNumberToArray";
 
-export const fetchUserAuctionsData = async (
+export const fetchAuctionUser = async (
   account: string,
   dayIndexs: number[],
   signer: Signer | ethers.providers.Provider
@@ -11,26 +12,29 @@ export const fetchUserAuctionsData = async (
   const userData = await Promise.all(
     dayIndexs.map(async (i) => {
       const day = i.toString();
-      // get the amount of avax staked for this day
-      const { rawAmount/* , referrerAddr  */} = await getAspContract(
-        signer
-      ).xfLobbyEntry(account, day, "0");
+      // get total auction count and index
+      const auctionIndexs = await fetchDayAuctionCount(account, day);
 
-      console.log(rawAmount);
-      
-      const avaxAmount = new BigNumber(rawAmount._hex).div(BIG_TEN.pow(18));
-      
-     // get the total ppol
-     const rawPoolAmount = await getAspContract(signer).xfLobby("0");
-     const pool = new BigNumber(rawPoolAmount._hex).div(BIG_TEN.pow(18));
-     const state = true;
+      // get the amount of avax staked for this day
+      // get total lobby entries for that day... wait I do not think one can enter more than once
+      const entrySum = spreadToArray(auctionIndexs).reduce(
+        async (amount, index) => {
+          const amt = await amount;
+          const { rawAmount /* , referrerAddr  */ } = await getAspContract(
+            signer
+          ).xfLobbyEntry(account, day, index.toString()); // account, day,
+          return new BigNumber(rawAmount._hex).plus(amt).toNumber();
+        },
+        (async () => 0)()
+      );
+      const totalEntry = await entrySum;
+      const avaxAmount = new BigNumber(totalEntry).div(BIG_TEN.pow(18));
 
       return {
-        day: 1,
-        pool: pool.toJSON(),
-        state: state,
-        recieve: 24,
-        entry: avaxAmount.toJSON()
+        id: i,
+        auctionIndexs: spreadToArray(auctionIndexs),
+        rewards: "0",
+        entry: avaxAmount.toJSON(),
       };
     })
   );
@@ -38,12 +42,8 @@ export const fetchUserAuctionsData = async (
   return userData;
 };
 
-export const fetchDayAuctionCount = async (
-  account: string,
-  day: string,
-  signer: Signer | ethers.providers.Provider
-) => {
-  const {/*  headIndex, */ tailIndex } = await getAspContract(signer).xfLobbyMembers(
+export const fetchDayAuctionCount = async (account: string, day: string) => {
+  const { /*  headIndex, */ tailIndex } = await getAspContract().xfLobbyMembers(
     day,
     account
   );

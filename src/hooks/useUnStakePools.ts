@@ -7,6 +7,7 @@ const useUnstakeFarms = (pid: number, index: number) => {
 
   const handleUnstake = useCallback(
     async () => {
+      if(!contract) return;
       await unstakePool(contract, pid, index);
     },
     [contract, pid, index]

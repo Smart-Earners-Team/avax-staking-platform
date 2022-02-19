@@ -20,7 +20,7 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({
   onDismiss,
   max,
   days,
-  tokenName = ""
+  tokenName = "",
 }) => {
   const [val, setVal] = useState("");
   const { toastSuccess, toastError } = useToast();
@@ -46,10 +46,8 @@ const WithdrawModal: React.FC<WithdrawModalProps> = ({
   }, [max, setVal]);
 
   return (
-    <div
-      className="w-[90%] p-4 outline-none max-w-xs mx-auto absolute left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2 bg-gray-900 rounded-xl ring ring-primary-50/40 font-sans transition duration-300"
-      title="Stake LP tokens"
-    >
+    <div className="w-[90%] p-4 outline-none max-w-xs mx-auto absolute left-1/2 -translate-x-1/2 top-1/2
+      -translate-y-1/2 bg-gray-900 rounded-xl ring ring-primary-50/40 font-sans transition duration-300">
       <div className="relative text-xl font-medium text-center mt-2 mb-4 p-4">
         <div className="text-left">Withdraw {tokenName}</div>
         <span

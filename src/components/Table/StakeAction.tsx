@@ -20,22 +20,18 @@ const StakeAction = () => {
     aspWallet: { balance },
   } = useAppContext();
   const dispatch = useAppDispatch();
-  const { account, library, active, error } = useActiveWeb3React();
+  const { account, active, error } = useActiveWeb3React();
   const { onPresentConnectModal } = useWallet();
 
   const handleStake = async (amount: string, days: string) => {
     // in serialized form
-    if (account && library) {
+    if (account) {
       await onStake(amount, days);
-      const indexs = await fetchPoolUserStakeCount(
-        account,
-        library.getSigner()
-      );
+      const indexs = await fetchPoolUserStakeCount(account);
       const stakeIndexs = new Array(indexs).fill(0).map((e, i) => i);
       dispatch(
         fetchPoolsUserDataAsync({
           account,
-          signer: library.getSigner(),
           stakeIndexs,
         })
       );

@@ -13,7 +13,7 @@ interface PoolUserDataResponse {
   index: number;
   startDay: SerializedBigNumber;
   endDay: SerializedBigNumber;
-  progress: number;
+  progress: number | undefined;
   stakedAmount: SerializedBigNumber;
   shares: SerializedBigNumber;
   dividends: SerializedBigNumber;
@@ -26,25 +26,26 @@ export const fetchPoolsUserDataAsync = createAsyncThunk<
   PoolUserDataResponse[],
   {
     account: string;
-    signer: ethers.Signer | ethers.providers.Provider;
     stakeIndexs: number[];
   }
->("pools/fetchUserDataAsync", async ({ account, signer, stakeIndexs }) => {
-  const fetchedPools = await fetchUserPoolsData(account, signer, stakeIndexs);
+>("pools/fetchUserDataAsync", async ({ account, stakeIndexs }) => {
+  const fetchedPools = await fetchUserPoolsData(account, stakeIndexs);
 
   return stakeIndexs.map((stakeIndex, index) => {
+    const start = fetchedPools[index].lockedDay;
+    const end = start + fetchedPools[index].stakedDays;
     return {
       pid: fetchedPools[index].stakeId,
       index: stakeIndex,
-      startDay: "1",
-      endDay: (fetchedPools[index].stakedDays + 1).toString(),
+      startDay: start.toString(),
+      endDay: end.toString(),
       progress: fetchedPools[index].progress,
       stakedAmount: fetchedPools[index].stakedSuns,
       shares: fetchedPools[index].stakeShares,
-      dividends: "0",
+      dividends: fetchedPools[index].dividends,
       bonus: "0",
-      paidAmount: "0",
-      daysToStake: fetchedPools[index].stakedDays,
+      paidAmount: fetchedPools[index].paidAmount,
+      daysToStake: fetchedPools[index].stakedDays.toString(),
     };
   });
 });

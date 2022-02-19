@@ -4,11 +4,11 @@ import SEO from "components/SEO";
 import FaqAccordion from "components/widgets/Accordion/FaqAccordion";
 import { auctionFaqs } from "globalData";
 import AuctionTable from "components/Table/AuctionTable";
-import { usePoolsWithUserData } from "state/pools/hooks";
+import { useAuctionsWithUserData } from "state/auctions/hooks";
 
 export default function Auction() {
   // fetch user data async;
-  usePoolsWithUserData();
+  useAuctionsWithUserData();
 
   return (
     <Layout>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "components/Layout";
 import SEO from "components/SEO";
 import StakingTable from "components/Table/StakingTable";
@@ -6,10 +6,19 @@ import FaqAccordion from "components/widgets/Accordion/FaqAccordion";
 import { stakingFaqs } from "globalData";
 import StakeAction from "components/Table/StakeAction";
 import { usePoolsWithUserData } from "state/pools/hooks";
+import { fetchGlobalData } from "utils/poolHelpers";
 
 export default function Stake() {
   // fetch user data async;
   usePoolsWithUserData();
+  const [shareRate, setShareRate] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      const { shareRate } = await fetchGlobalData();
+      setShareRate(shareRate);
+    })();
+  }, []);
 
   return (
     <Layout>
@@ -42,7 +51,7 @@ export default function Stake() {
           <div className="text-lg text-gray-500">
             SHARE RATE{" "}
             <span className="inline-block ml-2 text-2xl font-semibold text-gray-500">
-              0/ASP
+              {shareRate.toString()}/ASP
             </span>
           </div>
           <div className="text-lg text-gray-500">

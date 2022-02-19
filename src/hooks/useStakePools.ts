@@ -7,11 +7,11 @@ const useStakePools = () => {
 
   const handleStake = useCallback(
     async (amount: string, days: string) => {
+      if (!contract) return;
       await stakePool(contract, amount, days);
     },
     [contract]
   );
-
   return { onStake: handleStake };
 };
 

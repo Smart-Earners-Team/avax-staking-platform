@@ -1,29 +1,47 @@
 import React, { useMemo, useState } from "react";
-import { ProgressBar } from "react-step-progress-bar";
 import "react-step-progress-bar/styles.css";
-import { useTable, Cell } from "react-table";
-import Button from "components/Button/Button";
+import { useTable } from "react-table";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
-import { useAspContract } from "hooks/useContract";
 import useToast from "hooks/useToast";
-import { fetchPoolUserStakeCount } from "state/pools/fetchPoolUser";
-import { fetchPoolsUserDataAsync } from "state/pools";
 import { useAppDispatch } from "state";
-import { usePools } from "state/pools/hooks";
-// import { fetchUserAuctionsData } from "state/auctions/fetchAuctionUser";
+import useEnterAuction from "hooks/useEnterAuction";
+import useModal from "components/widgets/Modal/useModal";
+import { useAppContext } from "hooks/useAppContext";
+import BigNumber from "bignumber.js";
+import { EnterAuctionModal } from "components/Modals/EnterAuctionModal";
+import { useAuctions } from "state/auctions/hooks";
+import clx from "classnames";
+import { fetchAuctionUserDataAsync } from "state/auctions";
+import spreadToArray from "utils/spreadNumberToArray";
+import useExitAuction from "hooks/useExitAuction";
+import { fetchDayAuctionCount } from "state/auctions/fetchAuctionUser";
 
-type Accessor = "day" | "pool" | "aspAvak" | "state" | "recieve" | "entry" | "action";
+type Accessor =
+  | "day"
+  | "pool"
+  | "state"
+  | "aspAvax"
+  | "recieve"
+  | "entry"
+  | "action";
 
 export default function AuctionTable() {
-  const { userDataLoaded } = usePools();
+  const { userDataLoaded, data: auctions } = useAuctions();
   const dispatch = useAppDispatch();
-  const { active, account, library } = useActiveWeb3React();
-  const aspContract = useAspContract();
+  const { account, library } = useActiveWeb3React();
+  const {
+    aspWallet: { bnbBalance },
+    refAddress,
+    currentDay,
+  } = useAppContext();
   const { toastSuccess, toastError } = useToast();
+  const { onEnter } = useEnterAuction();
+  const { onExit } = useExitAuction();
   // endstake transcation call
   const [pendingTx, setPendingTx] = useState<{ [key: string]: boolean }>();
 
   const transactionEnded = (key: string) => {
+    console.log(key);
     if (!pendingTx) return;
     const pending = pendingTx[key] === true;
     if (pending) {
@@ -31,22 +49,19 @@ export default function AuctionTable() {
       setPendingTx((p) => ({ ...p, key: false }));
     }
   };
-/* 
-  if(account && library) {
-      fetchUserAuctionsData(account, [0], library.getSigner());
-  } */
-  const tableRowsData: object[] = useMemo(
-    () => [
-      /* {
-        day: "1",
-        pool: "200",
-        state: "OPEN",
-        recieve: "24 ASP",
-        entry: "2",
-        action: () => {},
-      }, */
-    ],
-    []
+
+  const tableRowsData = useMemo(
+    () =>
+      auctions.map((a) => ({
+        day: a.id + 1,
+        pool: a.pool,
+        state: a.ended ? "CLOSED" : "OPEN",
+        aspAvax: a.aspPerAvax, // user data
+        recieve: a.userData.rewards.toJSON(), // user data
+        entry: a.userData.entryAmount.toJSON(), // userdata
+        action: a.action, // enter or exit
+      })),
+    [auctions]
   );
 
   const columns: {
@@ -68,7 +83,7 @@ export default function AuctionTable() {
       },
       {
         Header: "ASP/AVAX",
-        accessor: "aspAvak",
+        accessor: "aspAvax",
       },
       {
         Header: "ASP received ",
@@ -90,45 +105,50 @@ export default function AuctionTable() {
     columns,
     data: tableRowsData,
   });
-  const {
-    getTableProps,
-    getTableBodyProps,
-    headerGroups,
-    prepareRow,
-    rows,
-  } = tableInstance;
+  const { getTableProps, getTableBodyProps, headerGroups, prepareRow, rows } =
+    tableInstance;
 
-  const handleStakeEnd = async (cell: Cell<typeof tableRowsData[0], any>) => {
-    setPendingTx((p) => ({
-      ...p,
-      [cell.row.id]: true,
-    }));
-    try {
-      await cell.value(aspContract);
-      if (account && library) {
-        const indexs = await fetchPoolUserStakeCount(
+  const actionAndRefreshHandler = async (func: () => Promise<void>) => {
+    if (account && library) {
+      await func();
+      if (!currentDay) return;
+      // get current day from app context
+      const indexes = spreadToArray(currentDay.value);
+      // fetch auctions
+      dispatch(
+        fetchAuctionUserDataAsync({
           account,
-          library.getSigner()
-        );
-        const stakeIndexs = new Array(indexs).fill(0).map((e, i) => i);
-        dispatch(
-          fetchPoolsUserDataAsync({
-            account,
-            signer: library.getSigner(),
-            stakeIndexs,
-          })
-        );
-      }
-      toastSuccess("Success!", "You have ended your stake in this pool.");
-      transactionEnded(cell.row.id);
-    } catch (error) {
-      toastError(
-        "Error",
-        "Please try again. Confirm the transaction and make sure you are paying enough gas!"
+          ids: indexes,
+          signer: library.getSigner(),
+        })
       );
-      transactionEnded(cell.row.id);
     }
   };
+
+  const handleEnterAuction = async (amount: string, referrer: string) => {
+    try {
+      await actionAndRefreshHandler(() => onEnter(amount, referrer));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const exitLobby = async (enterDay: number, count: number) => {
+    try {
+      await actionAndRefreshHandler(() => onExit(enterDay, count));
+    } catch (error) {
+      throw error;
+    }
+  };
+
+  const [onPresentDeposit] = useModal(
+    <EnterAuctionModal
+      tokenBalance={new BigNumber(bnbBalance)}
+      referrer={refAddress}
+      onConfirm={handleEnterAuction}
+      tokenName="BNB"
+    />
+  );
 
   return (
     <div>
@@ -157,49 +177,76 @@ export default function AuctionTable() {
             {...getTableBodyProps()}
             className="bg-white divide-y divide-gray-200 w-full"
           >
-            {userDataLoaded &&
-              rows.length > 0 &&
+            {rows.length > 0 &&
               rows.map((row) => {
                 prepareRow(row);
                 return (
                   <tr {...row.getRowProps()} className="hover:bg-gray-100">
                     {row.cells.map((cell) => {
-                      const isProgress = cell.column.id === "progress";
                       const isAction = cell.column.id === "action";
-                      if (isProgress)
+                      if (isAction) {
+                        const action =
+                          cell.value as typeof tableRowsData[0]["action"];
+                        const ended = action === "ended";
+                        const toExit = action === "exit";
+                        const toEnter = action === "enter";
+
+                        const enterClassName = `bg-green-400 hover:bg-green-500 focus:bg-green-500
+                          focus:ring-green-500 focus-within:ring-green-500`;
+                        const exitClassName = `bg-red-400 hover:bg-red-500 focus:bg-red-500 focus:ring-red-500
+                          focus-within:ring-red-500`;
+                        const endClassName = "bg-gray-300 cursor-not-allowed";
                         return (
                           <td
                             {...cell.getCellProps()}
                             className="p-4 text-sm text-gray-900 whitespace-nowrap"
                           >
                             {
-                              <ProgressBar
-                                percent={Number(cell.value)}
-                                height={5}
-                                width={70}
-                              />
-                            }
-                          </td>
-                        );
-                      if (isAction)
-                        return (
-                          <td
-                            {...cell.getCellProps()}
-                            className="p-4 text-sm text-gray-900 whitespace-nowrap"
-                          >
-                            {
-                              <Button
-                                onClick={() => handleStakeEnd(cell)}
-                                disabled={true
-                                //   pendingTx && pendingTx[cell.row.id] === true
+                              <button
+                                onClick={async () => {
+                                  if (
+                                    account &&
+                                    typeof currentDay !== "undefined"
+                                  ) {
+                                    setPendingTx((p) => ({
+                                      ...p,
+                                      [cell.row.id]: true,
+                                    }));
+                                    try {
+                                      const count = await fetchDayAuctionCount(
+                                        account,
+                                        currentDay.index.toString()
+                                      );
+                                      if (toEnter) onPresentDeposit();
+                                      if (toExit) exitLobby(currentDay.index, count);
+                                    } catch (error) {
+                                      console.log(error);
+                                    } finally {
+                                      transactionEnded(cell.row.id);
+                                    }
+                                  }
+                                }}
+                                disabled={
+                                  pendingTx && pendingTx[cell.row.id] === true
                                 }
-                                className="py-1 px-2"
+                                className={clx(
+                                  `py-1 px-3 text-sm rounded-full shadow disabled:cursor-not-allowed
+                                    disabled:opacity-70 ring-2 ring-offset-1 ring-transparent transition-all
+                                    duration-100`,
+                                  {
+                                    [enterClassName]: toEnter,
+                                    [exitClassName]: toExit,
+                                    [endClassName]: ended,
+                                  }
+                                )}
                               >
-                                Enter
-                              </Button>
+                                {toEnter ? "Enter" : toExit ? "Exit" : "Ended"}
+                              </button>
                             }
                           </td>
                         );
+                      }
+
                       return (
                         <td
                           {...cell.getCellProps()}
@@ -212,27 +259,14 @@ export default function AuctionTable() {
                   </tr>
                 );
               })}
-            {userDataLoaded && rows.length <= 0 && (
+            {rows.length <= 0 && (
               <tr>
-                <td colSpan={9} className="text-center py-5 text-sm bg-gray-50">
-                  No active auction at this time check back later.
+                <td
+                  colSpan={9}
+                  className="text-center py-5 text-sm bg-gray-50 animate-pulse"
+                >
+                  Loading...
                 </td>
-              </tr>
-            )}
-            {!userDataLoaded && (
-              <tr>
-                {active ? (
-                  <td
-                    colSpan={9}
-                    className="text-center py-4 text-sm bg-gray-50 animate-pulse"
-                  >
-                    Loading...
-                  </td>
-                ) : (
-                  <td colSpan={9} className="text-center py-4 text-sm">
-                    Connect your wallet to load records
-                  </td>
-                )}
               </tr>
             )}
           </tbody>

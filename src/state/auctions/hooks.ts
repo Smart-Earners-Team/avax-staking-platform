@@ -1,87 +1,102 @@
 import { useEffect } from "react";
-// import { useSelector } from "react-redux";
-// import BigNumber from "bignumber.js";
-// import { BIG_ZERO } from "utils/bigNumber";
-// import { useAppDispatch } from "state";
-// import useRefresh from "hooks/useRefresh";
-// import { fetchPoolsUserDataAsync } from ".";
-// import {
-//   DeserializedPoolsState,
-//   DeserializedPoolUserData,
-//   SerializedPoolUserData,
-//   State,
-// } from "state/types-pool";
-// import useActiveWeb3React from "hooks/useActiveWeb3React";
-// import { Contract } from "@ethersproject/contracts";
-// import { unstakePool } from "utils/calls";
+import { useSelector } from "react-redux";
+import { useAppDispatch } from "state";
+import useRefresh from "hooks/useRefresh";
+import useActiveWeb3React from "hooks/useActiveWeb3React";
+import { getCurrentDay } from "utils/calls";
+import { fetchAuctionsPublicDataAsync, fetchAuctionUserDataAsync } from ".";
+import spreadToArray from "utils/spreadNumberToArray";
+import {
+  DeserializedAuctionsState,
+  DeserializedAuctionUserData,
+  State,
+} from "state/types-pool";
+import BigNumber from "bignumber.js";
+import { BIG_ZERO } from "utils/bigNumber";
+import { DeserializedAuction, SerializedAuction } from "state/types";
 
-// const deserializePoolUserData = (
-//   pool: SerializedPoolUserData
-// ): DeserializedPoolUserData => {
-//   return {
-//     pid: Number(pool.pid),
-//     index: pool.index,
-//     startDay: pool ? new BigNumber(pool.startDay) : BIG_ZERO,
-//     endDay: pool ? new BigNumber(pool.endDay) : BIG_ZERO,
-//     progress: pool ? Number(pool.progress) : 0,
-//     stakedAmount: pool ? new BigNumber(pool.stakedAmount) : BIG_ZERO,
-//     shares: pool ? new BigNumber(pool.shares) : BIG_ZERO,
-//     dividends: pool ? new BigNumber(pool.dividends) : BIG_ZERO,
-//     bonus: pool ? new BigNumber(pool.bonus) : BIG_ZERO,
-//     paidAmount: pool ? new BigNumber(pool.paidAmount) : BIG_ZERO,
-//     daysToStake: pool ? new BigNumber(pool.daysToStake) : BIG_ZERO,
-//     action: (contract: Contract) => unstakePool(contract, pool.pid, pool.index)
-//   };
-// };
+const deserializeAuctionUserData = (
+  auction: SerializedAuction
+): DeserializedAuctionUserData => {
+  return {
+    auctionIndexs: auction.userData ? auction.userData.auctionIndexs : [],
+    rewards: auction.userData
+      ? new BigNumber(auction.userData.rewards)
+      : BIG_ZERO,
+    entryAmount: auction.userData
+      ? new BigNumber(auction.userData.entryAmount)
+      : BIG_ZERO,
+  };
+};
 
-// const deserializePool = (
-//   pool: SerializedPoolUserData
-// ): DeserializedPoolUserData => {
-//   return deserializePoolUserData(pool);
-// };
+const deserializeAuction = (
+  auction: SerializedAuction
+): DeserializedAuction => {
+  const { id, ended, pool, aspPerAvax, userData } = auction;
+  const action = ended
+    ? "ended"
+    : /* User entered*/ userData && userData.auctionIndexs.length > 0
+    ? "exit"
+    : "enter";
 
-// export const usePools = (): DeserializedPoolsState => {
-//   const pools = useSelector((state: State) => state.pools);
-//   const deserializedPoolsData = pools.data.map(deserializePool);
-//   const { userDataLoaded } = pools;
-//   return {
-//     userDataLoaded,
-//     data: deserializedPoolsData,
-//   };
-// };
+  return {
+    id,
+    pool,
+    ended,
+    action,
+    aspPerAvax,
+    userData: deserializeAuctionUserData(auction),
+  };
+};
 
-// export const usePoolFromPid = (
-//   pid: number
-// ): DeserializedPoolUserData | undefined => {
-//   const pool = useSelector((state: State) =>
-//     state.pools.data.find((f) => f.pid === pid)
-//   );
-//   return pool ? deserializePool(pool) : undefined;
-// };
+export const useAuctions = (): DeserializedAuctionsState => {
+  const auction = useSelector((state: State) => state.auctions);
+  const deserializedAuctionsData = auction.data.map(deserializeAuction);
+  const { userDataLoaded } = auction;
+  return {
+    userDataLoaded,
+    data: deserializedAuctionsData,
+  };
+};
 
-// export const usePoolUser = (
-//   pid: number
-// ): DeserializedPoolUserData | undefined => {
-//   const pool = usePoolFromPid(pid);
+export const useAuctionFromid = (
+  id: number
+): DeserializedAuction | undefined => {
+  const auction = useSelector((state: State) =>
+    state.auctions.data.find((a) => a.id === id)
+  );
+  return auction ? deserializeAuction(auction) : undefined;
+};
 
-//   return pool ? pool : undefined;
-// };
+export const useAuctionUser = (id: number): DeserializedAuction | undefined => {
+  const pool = useAuctionFromid(id);
+  return pool ? pool : undefined;
+};
 
-// export const usePoolsWithUserData = () => {
-//   const dispatch = useAppDispatch();
-//   const { slowRefresh } = useRefresh();
-//   const { account, library } = useActiveWeb3React();
+export const useAuctionsWithUserData = () => {
+  const dispatch = useAppDispatch();
+  const { slowRefresh } = useRefresh();
+  const { account, library } = useActiveWeb3React();
 
-//   useEffect(() => {
-//     // dispatch(fetchPoolsPublicDataAsync(pids));
-//     if (account && library) {
-//         dispatch(
-//           fetchPoolsUserDataAsync({
-//             account,
-//             signer: library.getSigner(),
-//             [0]
-//           })
-//         );
-//     }
-//   }, [dispatch, slowRefresh, account, library]);
-// };
+  useEffect(() => {
+    const autionCount = getCurrentDay();
+    autionCount
+      .then((count) => {
+        const ids = spreadToArray(count.value);
+        dispatch(fetchAuctionsPublicDataAsync(ids));
+
+        //fetch user data if wallet is connected
+        if (account && library) {
+          // get stake counts
+          dispatch(
+            fetchAuctionUserDataAsync({
+              account,
+              ids,
+              signer: library.getSigner(),
+            })
+          );
+        }
+      })
+      .catch((e) => {});
+  }, [dispatch, slowRefresh, account, library]);
+};

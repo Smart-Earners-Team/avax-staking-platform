@@ -25,7 +25,7 @@ type Accessor =
 export default function StakingTable() {
   const { userDataLoaded, data } = usePools();
   const dispatch = useAppDispatch();
-  const { active, account, library } = useActiveWeb3React();
+  const { active, account } = useActiveWeb3React();
   const aspContract = useAspContract();
   const { toastSuccess, toastError } = useToast();
   // endstake transcation call
@@ -144,17 +144,14 @@ export default function StakingTable() {
       [cell.row.id]: true,
     }));
     try {
+      if (!aspContract) return;
       await cell.value(aspContract);
-      if (account && library) {
-        const indexs = await fetchPoolUserStakeCount(
-          account,
-          library.getSigner()
-        );
+      if (account) {
+        const indexs = await fetchPoolUserStakeCount(account);
         const stakeIndexs = new Array(indexs).fill(0).map((e, i) => i);
         dispatch(
           fetchPoolsUserDataAsync({
             account,
-            signer: library.getSigner(),
             stakeIndexs,
           })
         );
@@ -197,7 +194,8 @@ export default function StakingTable() {
             {...getTableBodyProps()}
             className="bg-white divide-y divide-gray-200 w-full"
           >
-            {userDataLoaded && page.length > 0 && (
+            {userDataLoaded &&
+              page.length > 0 &&
               page.map((row) => {
                 prepareRow(row);
                 return (
@@ -250,14 +248,10 @@ export default function StakingTable() {
                     })}
                   </tr>
                 );
-              })
-            )}
+              })}
             {userDataLoaded && page.length <= 0 && (
               <tr>
-                <td
-                  colSpan={9}
-                  className="text-center py-5 text-sm bg-gray-50"
-                >
+                <td colSpan={9} className="text-center py-5 text-sm bg-gray-50">
                   No records to show. Stake some ASP
                 </td>
               </tr>
@@ -281,8 +275,11 @@ export default function StakingTable() {
           </tbody>
         </table>
       </div>
-      <div className="mt-3 flex flex-col md:flex-row-reverse md:justify-center md:gap-3 items-center">
-        <div className="text-sm">
+      <div
+        className="mt-3 flex flex-col md:flex-row-reverse md:flex-start md:gap-3 items-center
+        bg-gray-100"
+      >
+        <div className="text-sm text-gray-500 mt-3 md:mt-0">
           <span>
             Page{" "}
             <strong>
@@ -298,7 +295,7 @@ export default function StakingTable() {
                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 gotoPage(page);
               }}
-              className="w-20 border-b-2 outline-none border-gray-500"
+              className="w-20 border-b-2 outline-none border-gray-500 px-1 rounded-sm"
             />
           </span>{" "}
           <select
@@ -306,7 +303,7 @@ export default function StakingTable() {
             onChange={(e) => {
               setPageSize(Number(e.target.value));
             }}
-            className="w-20 border-b-2 outline-none border-gray-500"
+            className="w-20 border-b-2 outline-none border-gray-500 rounded-sm"
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>
@@ -318,44 +315,44 @@ export default function StakingTable() {
         <div className="my-4">
           <ul className="flex pl-0 list-none">
             <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
+              <button
+                className="py-1 px-2 text-sm rounded-md disabled:cursor-not-allowed
+                  disabled:opacity-40"
                 onClick={() => gotoPage(0)}
                 disabled={!canPreviousPage}
               >
                 First
-              </Button>
+              </button>
             </ListItem>
             <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
+              <button
+                className="py-1 px-2 text-sm rounded-md disabled:cursor-not-allowed
+                  disabled:opacity-40"
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
               >
                 Previous
-              </Button>
+              </button>
             </ListItem>
             <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
+              <button
+                className="py-1 px-2 text-sm rounded-md disabled:cursor-not-allowed
+                disabled:opacity-40"
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
               >
                 Next
-              </Button>
+              </button>
             </ListItem>
             <ListItem>
-              <Button
-                variant="secondary"
-                className="py-1 px-2 text-sm font-light"
+              <button
+                className="py-1 px-2 text-sm rounded-md disabled:cursor-not-allowed
+                disabled:opacity-40"
                 onClick={() => gotoPage(pageCount - 1)}
                 disabled={!canNextPage}
               >
                 Last
-              </Button>
+              </button>
             </ListItem>
           </ul>
         </div>

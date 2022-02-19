@@ -15,6 +15,7 @@ import useActiveWeb3React from "hooks/useActiveWeb3React";
 import { fetchPoolUserStakeCount } from "./fetchPoolUser";
 import { Contract } from "@ethersproject/contracts";
 import { unstakePool } from "utils/calls";
+import spreadToArray from "utils/spreadNumberToArray";
 
 const deserializePoolUserData = (
   pool: SerializedPoolUserData
@@ -71,25 +72,24 @@ export const usePoolUser = (
 export const usePoolsWithUserData = () => {
   const dispatch = useAppDispatch();
   const { slowRefresh } = useRefresh();
-  const { account, library } = useActiveWeb3React();
+  const { account } = useActiveWeb3React();
 
   useEffect(() => {
     // dispatch(fetchPoolsPublicDataAsync(pids));
-    if (account && library) {
+    if (account) {
       // get stake counts
-      let stakeCount = fetchPoolUserStakeCount(account, library.getSigner());
+      let stakeCount = fetchPoolUserStakeCount(account);
       stakeCount
         .then((count) => {
-          const stakeIndexs = new Array(count).fill(0).map((e, i) => i);
+          const stakeIndexs = spreadToArray(count);
           dispatch(
             fetchPoolsUserDataAsync({
               account,
-              signer: library.getSigner(),
               stakeIndexs,
             })
           );
         })
         .catch((e) => {});
     }
-  }, [dispatch, slowRefresh, account, library]);
+  }, [dispatch, slowRefresh, account]);
 };
