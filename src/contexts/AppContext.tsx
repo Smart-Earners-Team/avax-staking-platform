@@ -14,7 +14,7 @@ export interface GlobalAppContext {
   aspWallet: {
     active: boolean;
     balance: string;
-    bnbBalance: string;
+    avaxBalance: string;
     isConnecting: boolean;
     error: Error | undefined;
     retry: () => void;
@@ -27,7 +27,7 @@ const defaultValues: GlobalAppContext = {
   aspWallet: {
     active: false,
     balance: "0.000",
-    bnbBalance: "0.000",
+    avaxBalance: "0.000",
     isConnecting: true,
     error: undefined,
     retry: () => {},
@@ -46,9 +46,9 @@ export default function AppContext({
 }) {
   const [isConnecting, setIsConnecting] = useState(false);
   const { account, deactivate, active, error, library } = useActiveWeb3React();
-  // get wallet balance in bnb
+  // get wallet balance in avax
   const [balance, setBalance] = useState("0.000");
-  const [bnbBal, setBnbBal] = useState("0.000");
+  const [avaxBal, setBnbBal] = useState("0.000");
   const [ref, setRef] = useState("");
   const [currentDay, setCurrentDay] = useState<{value: number; index: number}>();
   // Get referral address
@@ -85,11 +85,11 @@ export default function AppContext({
       (async () => {
         const bal = await fetchUserTokenBalance(
           account,
-          getAspContract(library.getSigner())
+          getAspContract()
         );
-        const bnb = await library.getBalance(account);
+        const avax = await library.getBalance(account);
         setBalance(formatFixedNumber(ethers.FixedNumber.from(bal), 4));
-        setBnbBal(formatFixedNumber(ethers.FixedNumber.from(bnb), 4, 18));
+        setBnbBal(formatFixedNumber(ethers.FixedNumber.from(avax), 4, 18));
       })();
     } else {
       setBalance("0.000");
@@ -109,7 +109,7 @@ export default function AppContext({
         aspWallet: {
           active,
           balance: balance,
-          bnbBalance: bnbBal,
+          avaxBalance: avaxBal,
           isConnecting,
           error,
           retry: handleRetry,

@@ -1,28 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { save, load } from "redux-localstorage-simple";
-import cloneDeep from "lodash/cloneDeep";
 import { useDispatch } from "react-redux";
 import poolsReducer from "./pools";
 import auctionsReducer from "./auctions";
 import { updateVersion } from "./global/actions";
-import user, { initialState as userInitialState } from "./user/reducer";
 
-const PERSISTED_KEYS: string[] = ["user"];
-
-const safeCloneDeep = <T>(state: T) => {
-  try {
-    return JSON.parse(JSON.stringify(state)) as T;
-  } catch (error) {
-    console.error(error);
-    return cloneDeep(state);
-  }
-};
+const PERSISTED_KEYS: string[] = ["auctions"];
 
 const store = configureStore({
   devTools: process.env.NODE_ENV !== "production",
   reducer: {
     pools: poolsReducer,
-    user,
     auctions: auctionsReducer,
   },
   middleware: (getDefaultMiddleware) => [
@@ -31,9 +19,6 @@ const store = configureStore({
   ],
   preloadedState: load({
     states: PERSISTED_KEYS,
-    preloadedState: {
-      user: safeCloneDeep(userInitialState),
-    },
   }),
 });
 

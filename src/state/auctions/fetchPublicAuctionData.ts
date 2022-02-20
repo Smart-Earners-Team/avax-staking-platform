@@ -28,7 +28,7 @@ const fetchAuction = async (id: number): Promise<PublicAuctionData> => {
     id,
     pool: new BigNumber(pool._hex).div(BIG_TEN.pow(18)).toJSON(),
     ended,
-    aspPerAvax: aspPerAvax.toFixed(4).toString(),
+    aspPerAvax: aspPerAvax.isFinite() ? aspPerAvax.toFixed(4).toString() : "0",
   };
 };
 

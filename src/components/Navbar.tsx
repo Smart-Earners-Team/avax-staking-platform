@@ -19,7 +19,7 @@ export default function Navbar() {
   };
 
   return (
-    <div className="w-full text-white bg-primary-500 py-5">
+    <div className="w-full text-white bg-primary-600 py-5">
       <div className="flex flex-col max-w-screen-xl px-4 mx-auto lg:items-center lg:justify-between
         lg:flex-row md:px-6">
         <div className="flex flex-row items-center justify-between">

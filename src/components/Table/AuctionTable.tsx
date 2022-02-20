@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import "react-step-progress-bar/styles.css";
 import { useTable } from "react-table";
 import useActiveWeb3React from "hooks/useActiveWeb3React";
@@ -29,24 +29,23 @@ export default function AuctionTable() {
   const dispatch = useAppDispatch();
   const { account, library } = useActiveWeb3React();
   const {
-    aspWallet: { bnbBalance },
+    aspWallet: { avaxBalance },
     refAddress,
     currentDay,
   } = useAppContext();
   const { onEnter } = useEnterAuction();
   const { onExit } = useExitAuction();
-  // endstake transcation call
+  /* // endstake transcation call
   const [pendingTx, setPendingTx] = useState<{ [key: string]: boolean }>();
 
   const transactionEnded = (key: string) => {
-    console.log(key);
     if (!pendingTx) return;
     const pending = pendingTx[key] === true;
     if (pending) {
       console.log({ ...pendingTx, key: false });
       setPendingTx((p) => ({ ...p, key: false }));
     }
-  };
+  }; */
 
   const tableRowsData = useMemo(
     () =>
@@ -141,10 +140,10 @@ export default function AuctionTable() {
 
   const [onPresentDeposit] = useModal(
     <EnterAuctionModal
-      tokenBalance={new BigNumber(bnbBalance)}
+      tokenBalance={new BigNumber(avaxBalance)}
       referrer={refAddress}
       onConfirm={handleEnterAuction}
-      tokenName="BNB"
+      tokenName="AVAX"
     />
   );
 
@@ -206,10 +205,10 @@ export default function AuctionTable() {
                                     account &&
                                     typeof currentDay !== "undefined"
                                   ) {
-                                    setPendingTx((p) => ({
+                                    /* setPendingTx((p) => ({
                                       ...p,
                                       [cell.row.id]: true,
-                                    }));
+                                    })); */
                                     try {
                                       const count = await fetchDayAuctionCount(
                                         account,
@@ -219,14 +218,14 @@ export default function AuctionTable() {
                                       if (toExit) exitLobby(currentDay.index, count);
                                     } catch (error) {
                                       console.log(error);
-                                    } finally {
+                                    } /* finally {
                                       transactionEnded(cell.row.id);
-                                    }
+                                    } */
                                   }
                                 }}
-                                disabled={
+                                /* disabled={
                                   pendingTx && pendingTx[cell.row.id] === true
-                                }
+                                } */
                                 className={clx(
                                   `py-1 px-3 text-sm rounded-full shadow disabled:cursor-not-allowed
                                     disabled:opacity-70 ring-2 ring-offset-1 ring-transparent transition-all

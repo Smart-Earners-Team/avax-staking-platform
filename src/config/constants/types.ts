@@ -1,4 +1,3 @@
-import { Token } from "config/entities/token";
 import JSBI from "jsbi";
 
 export interface Address {
@@ -16,37 +15,6 @@ export enum Rounding {
 }
 
 export type RecognizedChainId = 1 | 2 | 3 | 4 | 42 | 56 | 97 | 43114;
-
-export interface SerializedFarmConfig extends FarmConfigBaseProps {
-  token: SerializedToken;
-  quoteToken: SerializedToken;
-}
-
-export interface SerializedToken {
-  chainId: number;
-  address: string;
-  decimals: number;
-  symbol?: string;
-  name?: string;
-  projectLink?: string;
-}
-
-interface FarmConfigBaseProps {
-  pid: number;
-  lpSymbol: string;
-  lpAddresses: Address;
-  multiplier?: string;
-  dual?: {
-    rewardPerBlock: number;
-    earnLabel: string;
-    endBlock: number;
-  };
-}
-
-export interface DeserializedFarmConfig extends FarmConfigBaseProps {
-  token: Token;
-  quoteToken: Token;
-}
 
 export enum SolidityType {
   uint8 = "uint8",

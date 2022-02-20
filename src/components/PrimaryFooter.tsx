@@ -23,7 +23,7 @@ export default function PrimaryFooter() {
     }
   }
   return (
-    <footer className="bg-primary-500 text-white">
+    <footer className="bg-primary-600 text-white">
       <div>
         <div className="container mx-auto py-4 px-5 flex flex-col md:flex-row justify-between items-center">
           <Link

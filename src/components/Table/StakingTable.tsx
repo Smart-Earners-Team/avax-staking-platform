@@ -276,7 +276,7 @@ export default function StakingTable() {
         </table>
       </div>
       <div
-        className="mt-3 flex flex-col md:flex-row-reverse md:flex-start md:gap-3 items-center
+        className="mt-3 flex flex-col md:flex-row-reverse md:justify-end md:gap-3 items-center
         bg-gray-100"
       >
         <div className="text-sm text-gray-500 mt-3 md:mt-0">
@@ -295,7 +295,7 @@ export default function StakingTable() {
                 const page = e.target.value ? Number(e.target.value) - 1 : 0;
                 gotoPage(page);
               }}
-              className="w-20 border-b-2 outline-none border-gray-500 px-1 rounded-sm"
+              className="w-20 border-b-2 outline-none border-gray-500 px-1 rounded-sm bg-transparent"
             />
           </span>{" "}
           <select
@@ -303,7 +303,7 @@ export default function StakingTable() {
             onChange={(e) => {
               setPageSize(Number(e.target.value));
             }}
-            className="w-20 border-b-2 outline-none border-gray-500 rounded-sm"
+            className="w-20 border-b-2 outline-none border-gray-500 bg-transparent rounded-sm"
           >
             {[10, 20, 30, 40, 50].map((pageSize) => (
               <option key={pageSize} value={pageSize}>

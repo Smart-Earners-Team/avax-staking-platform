@@ -1,7 +1,8 @@
 import Countdown from "react-countdown";
 
 const getNextDay = () => {
-  const tomorrow = new Date("Sun, 20 Feb 2022 GMT");
+  const tomorrow = new Date();
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
   // set to midnight
   tomorrow.setUTCHours(0, 0, 0, 0);
   return tomorrow.toUTCString();
@@ -10,7 +11,17 @@ const getNextDay = () => {
 export default function CountdownTimer() {
   return (
     <div className="inline-block">
-      <Countdown date={getNextDay()} />
+      <Countdown
+        autoStart
+        daysInHours
+        date={getNextDay()}
+        ref={(arg) => {
+          if (arg) {
+            const { isCompleted, start } = arg.getApi();
+            if (isCompleted()) start();
+          }
+        }}
+      />
     </div>
   );
 }

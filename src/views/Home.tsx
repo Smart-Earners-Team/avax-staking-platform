@@ -18,10 +18,11 @@ export default function HomePage() {
           staked."
       />
       {/* Hero header */}
-      <div className="bg-primary-500 md:bg-[url('logo-large-background.png')] md:bg-no-repeat md:bg-right-top">
+      <div className="bg-primary-600 md:bg-[url('logo-large-background.png')] md:bg-no-repeat
+        md:bg-right-top">
         <div
-          className="h-screen max-h-[900px] md:max-w-screen-lg lg:max-w-screen-2xl mx-auto flex flex-col justify-center
-            -my-0 px-8 lg:px-20 bg-primary-500/20"
+          className="h-screen max-h-[900px] md:max-w-screen-lg lg:max-w-screen-2xl mx-auto flex flex-col
+            justify-center -my-0 px-8 lg:px-20 bg-primary-600/20"
         >
           <div className="w-full max-w-3xl -mt-20 md:mt-0 text-center md:text-left">
             <h1 className="text-white">
@@ -44,7 +45,7 @@ export default function HomePage() {
               <Link
                 target="_blank"
                 to="https://snowtrace.io/address/0xb3127298c77b6d389217d985f4b7197388334df4"
-                className="mx-4 lg:w-auto ring-primary-400 text-primary hover:bg-primary-50/20
+                className="mx-4 lg:w-auto ring-primary-500 text-primary hover:bg-primary-50/20
                   hover:text-white hover:ring-gray-100 focus:bg-primary-50/20 focus:text-white focus:ring-gray-100"
                 button
               >
@@ -124,7 +125,7 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-      <div className="bg-primary-500">
+      <div className="bg-primary-600">
         <div
           id="contact-us"
           className="px-4 md:px-8 h-[400px] max-w-6xl mx-auto flex justify-center items-center"

@@ -17,7 +17,7 @@ export default function Layout(props: React.HTMLAttributes<"div">) {
         text-white font-medium text-sm"
       >
         <div>
-          Auction Starts: <CountdownTimer />
+          <span className="font-light">Auction Ends in: </span><CountdownTimer />
         </div>
       </div>
       <Navbar />
